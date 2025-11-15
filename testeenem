@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="font-sans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano de Estudos e Simulado ENEM</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Carrega a fonte Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Define a fonte Inter como padrão */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        /* Estilo para o bloco de fórmula */
+        .formula {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.95em;
+            color: #1f2937; /* text-gray-800 */
+            display: block; /* Mudar para block para ocupar a linha toda */
+            margin-top: 8px;
+            margin-bottom: 8px;
+            white-space: pre-wrap; /* Para quebrar linha no <pre> */
+        }
+        
+        /* Esconde o radio button original */
+        .radio-input {
+            display: none;
+        }
+
+        /* Estilo para o label (a opção clicável) */
+        .radio-label {
+            display: block;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 8px; /* rounded-lg */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500; /* medium */
+        }
+
+        /* Estilo da opção quando o mouse passa por cima */
+        .radio-label:hover {
+            border-color: #9ca3af; /* border-gray-400 */
+        }
+
+        /* Estilo da opção quando está SELECIONADA */
+        .radio-input:checked + .radio-label {
+            border-color: #2563eb; /* border-blue-600 */
+            background-color: #dbeafe; /* bg-blue-100 */
+            color: #1d4ed8; /* text-blue-700 */
+            font-weight: 600; /* semibold */
+        }
+
+        /* Estilos para o feedback (pós-verificação) */
+        .feedback-container {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        .feedback-correct {
+            background-color: #f0fdf4; /* bg-green-50 */
+            border: 1px solid #bbf7d0; /* border-green-200 */
+            color: #166534; /* text-green-800 */
+        }
+        .feedback-incorrect {
+            background-color: #fef2f2; /* bg-red-50 */
+            border: 1px solid #fecaca; /* border-red-200 */
+            color: #b91c1c; /* text-red-800 */
+        }
+        .explanation {
+            margin-top: 8px;
+            font-style: italic;
+            color: #374151; /* text-gray-700 */
+            border-top: 1px dashed #d1d5db; /* border-gray-300 */
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 leading-relaxed">
+
+    <!-- Container Principal -->
+    <main class="max-w-3xl mx-auto my-10 p-6 sm:p-10 bg-white rounded-lg shadow-lg">
+        
+        <!-- Cabeçalho Professor -->
+        <div class="text-sm font-medium text-gray-500 mb-6">
+            Professor Lucas
+        </div>
+
+        <h1 class="text-3xl font-bold text-blue-700 mb-4">
+            Plano de Estudo Focado (ENEM): Matemática Básica
+        </h1>
+        <p class="text-base text-gray-700">
+            Este é um roteiro simples para revisar três tópicos de alta frequência no ENEM: Regra de Três, Geometria Plana e Lógica Matemática.
+        </p>
+
+        <hr class="border-gray-300 my-8">
+
+        <!-- PARTE 1: PLANO DE ESTUDO -->
+        <section id="study-plan">
+            
+            <!-- Seção 1: Regra de Três -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-blue-600 mb-4">
+                    Etapa 1: Regra de Três (O Essencial)
+                </h2>
+                <p class="mb-4">
+                    A regra de três é fundamental não só para as questões que usam esse nome, mas também para resolver problemas de porcentagem, escala e proporção.
+                </p>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-2">Conceitos-Chave:</h3>
+                <ol class="list-decimal pl-5 space-y-3">
+                    <li>
+                        <strong>Proporcionalidade:</strong> Entenda o que são grandezas <em>diretamente</em> proporcionais (quando uma aumenta, a outra também aumenta) e <em>inversamente</em> proporcionais (quando uma aumenta, a outra diminui).
+                    </li>
+                    <li>
+                        <strong>Regra de Três Simples:</strong> Envolve apenas duas grandezas (ex: velocidade e tempo).
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li><em>Exemplo Direta:</em> Se 2kg de arroz custam R$ 10, quanto custam 5kg?</li>
+                            <li><em>Exemplo Inversa:</em> Se 2 pedreiros fazem um muro em 6 dias, quantos dias 4 pedreiros levariam?</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Regra de Três Composta:</strong> Envolve três ou mais grandezas.
+                    </li>
+                    <li>
+                        <strong>Porcentagem:</strong> É um caso de regra de três direta. "20% de 150" é o mesmo que:
+                        <pre class="formula">100% --- 150
+ 20% --- x</pre>
+                    </li>
+                </ol>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-2">Plano de Ação:</h3>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>Revise a diferença entre proporção direta e inversa.</li>
+                    <li>Faça 10 exercícios de regra de três simples (5 diretas, 5 inversas).</li>
+                    <li>Faça 5 exercícios de regra de três composta.</li>
+                    <li>Resolva 10 problemas de porcentagem (aumentos, descontos).</li>
+                </ul>
+            </section>
+
+            <hr class="border-gray-200 my-8">
+
+            <!-- Seção 2: Geometria Plana -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-blue-600 mb-4">
+                    Etapa 2: Geometria Plana (Foco em Áreas)
+                </h2>
+                <p class="mb-4">
+                    No ENEM, Geometria Plana quase sempre significa "cálculo de área".
+                </p>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-2">Conceitos-Chave:</h3>
+                <ol class="list-decimal pl-5 space-y-3">
+                    <li>
+                        <strong>Figuras Básicas:</strong> Você <em>precisa</em> saber as fórmulas de área do:
+                        <ul class="list-disc pl-5 mt-2 space-y-2">
+                            <li>Quadrado: <code class="formula">lado<sup>2</sup></code></li>
+                            <li>Retângulo: <code class="formula">base x altura</code></li>
+                            <li>Triângulo: <code class="formula">(base x altura) / 2</code></li>
+                            <li>Círculo: <code class="formula">&pi; (pi) x raio<sup>2</sup></code></li>
+                            <li>Trapézio: <code class="formula">((Base maior + base menor) x altura) / 2</code></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Teorema de Pitágoras:</strong> Essencial para encontrar a altura de um triângulo ou a diagonal de um retângulo. <code class="formula">(Hipotenusa)<sup>2</sup> = (Cateto)<sup>2</sup> + (Cateto)<sup>2</sup></code>.
+                    </li>
+                    <li>
+                        <strong>Áreas Compostas:</strong> O ENEM adora pedir a área de uma figura "sobrante". (Ex: a área de um terreno retangular menos a área de uma piscina circular no meio).
+                    </li>
+                </ol>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-2">Plano de Ação:</h3>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>Crie um "formulário" com as 5 fórmulas de área e o Teorema de Pitágoras.</li>
+                    <li>Resolva 15 exercícios de cálculo de área, focando em questões do ENEM.</li>
+                </ul>
+            </section>
+
+            <hr class="border-gray-200 my-8">
+
+            <!-- Seção 3: Lógica Matemática -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-blue-600 mb-4">
+                    Etapa 3: Lógica Matemática (Interpretação)
+                </h2>
+                <p class="mb-4">
+                    A lógica no ENEM aparece menos em "tabelas-verdade" e mais em problemas de raciocínio e interpretação de sentenças.
+                </p>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-2">Conceitos-Chave:</h3>
+                <ol class="list-decimal pl-5 space-y-3">
+                    <li>
+                        <strong>Conectivos Lógicos:</strong>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li><strong>E</strong> (Conjunção): Só é verdade se TUDO for verdade.</li>
+                            <li><strong>OU</strong> (Disjunção): Só é falso se TUDO for falso.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Negação (O mais importante!):</strong>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Negação de "P <strong>e</strong> Q": "Não-P <strong>ou</strong> Não-Q" (Troca o "E" por "OU" e nega as duas partes).</li>
+                            <li>Negação de "P <strong>ou</strong> Q": "Não-P <strong>e</strong> Não-Q" (Troca o "OU" por "E" e nega as duas partes).</li>
+                            <li>Negação de "Todo A é B": "Algum A não é B".</li>
+                            <li>Negação de "Nenhum A é B": "Algum A é B".</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Problemas de Raciocínio:</strong> Sequências, anagramas, problemas de "quem mente" ou ordenação de fatos.
+                    </li>
+                </ol>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-2">Plano de Ação:</h3>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>Pratique a negação de frases compostas (usando "E" e "OU").</li>
+                    <li>Resolva 10 problemas de raciocínio lógico de provas anteriores.</li>
+                </ul>
+            </section>
+        </section>
+
+        <!-- Divisor para o Botão de Início -->
+        <hr class="border-t-2 border-blue-200 my-10">
+
+        <!-- PARTE 2: BOTÃO DE INÍCIO DO SIMULADO -->
+        <div id="start-quiz-container" class="text-center my-10">
+            <h2 class="text-2xl font-semibold text-blue-700 mb-6">Pronto para testar seus conhecimentos?</h2>
+            <button id="start-quiz-button" class="bg-blue-600 text-white px-10 py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Começar Simulado Interativo
+            </button>
+        </div>
+        
+        <!-- PARTE 3: O SIMULADO (Oculto) -->
+        <section id="quiz-section" class="hidden">
+            <h2 class="text-3xl font-bold text-blue-700 mb-8 text-center">
+                Simulado Interativo (12 Questões)
+            </h2>
+            
+            <!-- Formulário do Quiz -->
+            <form id="quiz-form" class="space-y-10">
+                
+                <!-- Questão 1 -->
+                <fieldset class="quiz-question" data-question="1">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q1 (Regra de Três):</span> 6 operários, com a mesma capacidade de produção, realizam um serviço em 20 dias. Para realizar o <em>mesmo</em> serviço em 12 dias, quantos operários seriam necessários?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="a" class="radio-input">
+                            <span>A) 8 operários</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="b" class="radio-input">
+                            <span>B) 9 operários</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="c" class="radio-input" data-correct="true">
+                            <span>C) 10 operários</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="d" class="radio-input">
+                            <span>D) 12 operários</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 2 -->
+                <fieldset class="quiz-question" data-question="2">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q2 (Porcentagem):</span> Uma loja anuncia uma TV por R$ 2.500,00. Na "Black Friday", oferece um desconto de 22% à vista. Qual o valor da TV com o desconto?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="a" class="radio-input">
+                            <span>A) R$ 1.800,00</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="b" class="radio-input" data-correct="true">
+                            <span>B) R$ 1.950,00</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="c" class="radio-input">
+                            <span>C) R$ 2.050,00</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="d" class="radio-input">
+                            <span>D) R$ 550,00</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 3 -->
+                <fieldset class="quiz-question" data-question="3">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q3 (Regra de Três Comp.):</span> 5 impressoras imprimem 1000 páginas em 4 horas. Quantas páginas 10 impressoras, com o dobro da velocidade das primeiras, imprimem em 2 horas?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="a" class="radio-input">
+                            <span>A) 1000 páginas</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="b" class="radio-input">
+                            <span>B) 1500 páginas</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="c" class="radio-input" data-correct="true">
+                            <span>C) 2000 páginas</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="d" class="radio-input">
+                            <span>D) 4000 páginas</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 4 -->
+                <fieldset class="quiz-question" data-question="4">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q4 (Aumentos Sucessivos):</span> Um produto custava R$ 80,00. Sofreu um aumento de 20%. Na semana seguinte, sobre esse novo preço, sofreu um desconto de 10%. Qual o preço final?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="a" class="radio-input">
+                            <span>A) R$ 88,00</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="b" class="radio-input">
+                            <span>B) R$ 80,00</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="c" class="radio-input">
+                            <span>C) R$ 84,80</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="d" class="radio-input" data-correct="true">
+                            <span>D) R$ 86,40</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 5 -->
+                <fieldset class="quiz-question" data-question="5">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q5 (Geometria - Área):</span> Um terreno retangular tem 25m de comprimento por 10m de largura. Dentro dele, será construída uma piscina quadrada com 8m de lado. A área restante do terreno (grama) é de:
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="a" class="radio-input">
+                            <span>A) 64 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="b" class="radio-input" data-correct="true">
+                            <span>B) 186 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="c" class="radio-input">
+                            <span>C) 210 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="d" class="radio-input">
+                            <span>D) 250 m²</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+                
+                <!-- Questão 6 -->
+                <fieldset class="quiz-question" data-question="6">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q6 (Geometria - Pitágoras):</span> Um bombeiro apoia uma escada de 10m de comprimento em um prédio. A base da escada está a 6m de distância do prédio. Qual a altura que a escada atinge na parede?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q6" value="a" class="radio-input">
+                            <span>A) 4 m</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q6" value="b" class="radio-input">
+                            <span>B) 11,6 m</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q6" value="c" class="radio-input">
+                            <span>C) 7 m</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q6" value="d" class="radio-input" data-correct="true">
+                            <span>D) 8 m</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 7 -->
+                <fieldset class="quiz-question" data-question="7">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q7 (Geometria - Círculo):</span> Qual é a área de uma praça circular com 10 metros de raio? (Use π = 3,14).
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q7" value="a" class="radio-input">
+                            <span>A) 62,8 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q7" value="b" class="radio-input">
+                            <span>B) 100 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q7" value="c" class="radio-input" data-correct="true">
+                            <span>C) 314 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q7" value="d" class="radio-input">
+                            <span>D) 31,4 m²</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 8 -->
+                <fieldset class="quiz-question" data-question="8">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q8 (Geometria - Trapézio):</span> Um terreno tem forma de trapézio com base maior de 30m, base menor de 20m e altura de 10m. Qual a sua área?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q8" value="a" class="radio-input" data-correct="true">
+                            <span>A) 250 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q8" value="b" class="radio-input">
+                            <span>B) 300 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q8" value="c" class="radio-input">
+                            <span>C) 500 m²</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q8" value="d" class="radio-input">
+                            <span>D) 6000 m²</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 9 -->
+                <fieldset class="quiz-question" data-question="9">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q9 (Lógica - Negação "E"):</span> Qual é a negação da frase: "O carro é azul E a moto é nova"?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q9" value="a" class="radio-input">
+                            <span>A) O carro não é azul E a moto não é nova.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q9" value="b" class="radio-input" data-correct="true">
+                            <span>B) O carro não é azul OU a moto não é nova.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q9" value="c" class="radio-input">
+                            <span>C) O carro é azul OU a moto é nova.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q9" value="d" class="radio-input">
+                            <span>D) Se o carro não é azul, então a moto não é nova.</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 10 -->
+                <fieldset class="quiz-question" data-question="10">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q10 (Lógica - Negação "Todo"):</span> Qual é a negação da frase: "Todos os alunos foram aprovados"?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q10" value="a" class="radio-input">
+                            <span>A) Nenhum aluno foi aprovado.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q10" value="b" class="radio-input">
+                            <span>B) Todos os alunos foram reprovados.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q10" value="c" class="radio-input" data-correct="true">
+                            <span>C) Pelo menos um aluno não foi aprovado.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q10" value="d" class="radio-input">
+                            <span>D) Nenhum aluno foi reprovado.</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 11 -->
+                <fieldset class="quiz-question" data-question="11">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q11 (Lógica - Equivalência):</span> A frase "Se chove, então levo o guarda-chuva" é logicamente equivalente a qual frase?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q11" value="a" class="radio-input">
+                            <span>A) Chove E levo o guarda-chuva.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q11" value="b" class="radio-input" data-correct="true"> <!-- Gabarito corrigido via JS -->
+                            <span>B) Se não levo o guarda-chuva, então não chove.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q11" value="c" class="radio-input">
+                            <span>C) Não chove E não levo o guarda-chuva.</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q11" value="d" class="radio-input">
+                            <span>D) Chove OU levo o guarda-chuva.</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Questão 12 -->
+                <fieldset class="quiz-question" data-question="12">
+                    <legend class="text-lg font-semibold text-gray-800 mb-4">
+                        <span class="text-blue-600 font-bold">Q12 (Lógica - Raciocínio):</span> Três suspeitos (Analista, Gerente, Diretor) são interrogados. Apenas UM é culpado e apenas UM mente.<br>
+                        • O Analista diz: "Eu não sou o culpado."<br>
+                        • O Gerente diz: "O Analista é o culpado."<br>
+                        • O Diretor diz: "Eu não sou o culpado."<br>
+                        Quem é o culpado e quem mente, respectivamente?
+                    </legend>
+                    <div class="space-y-3">
+                        <label class="radio-label">
+                            <input type="radio" name="q12" value="a" class="radio-input">
+                            <span>A) Culpado: Analista / Mente: Gerente</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q12" value="b" class="radio-input" data-correct="true">
+                            <span>B) Culpado: Gerente / Mente: Gerente</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q12" value="c" class="radio-input">
+                            <span>C) Culpado: Analista / Mente: Analista</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q12" value="d" class="radio-input">
+                            <span>D) Culpado: Diretor / Mente: Diretor</span>
+                        </label>
+                    </div>
+                    <div class="feedback-container hidden"></div>
+                </fieldset>
+
+                <!-- Botão de Submit -->
+                <div class="text-center mt-10">
+                    <button type="submit" id="submit-button" class="bg-blue-600 text-white px-10 py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300">
+                        Verificar Resultados
+                    </button>
+                </div>
+            </form>
+
+            <!-- PARTE 4: Seção de Resultados (Oculta) -->
+            <section id="results-container" class="hidden mt-12 border-t-2 border-blue-200 pt-10">
+                <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">
+                    Seu Desempenho
+                </h2>
+                <div id="score-text" class="text-center text-2xl font-semibold text-gray-800 mb-8">
+                    <!-- O JavaScript irá preencher isso -->
+                </div>
+                
+                <h3 class="text-2xl font-semibold text-gray-700 mb-6">
+                    Revisão das Questões:
+                </h3>
+                <div id="feedback-area" class="space-y-6">
+                    <!-- O JavaScript irá preencher isso -->
+                </div>
+            </section>
+        </section>
+
+    </main>
+
+    <!-- Script do Quiz -->
+    <script>
+        // Define as explicações para cada questão
+        const explanations = {
+            q1: `<strong>Raciocínio:</strong> Regra de Três Simples Inversa. Se você quer fazer o serviço em *menos* dias (de 20 para 12), você precisará de *mais* operários. São grandezas inversamente proporcionais.
+                 <strong class="block mt-2">Cálculo:</strong> Você multiplica em linha, não em cruz.
+                 <code class="formula">12 * x = 6 * 20
+12x = 120
+x = 120 / 12
+x = 10 operários</code>`,
+            
+            q2: `<strong>Raciocínio:</strong> Porcentagem. Você pode calcular o valor do desconto e subtrair, ou calcular o valor final diretamente.
+                 <strong class="block mt-2">Método 1 (Achar desconto):</strong>
+                 <code class="formula">22% de 2500 = 0.22 * 2500 = R$ 550,00
+Valor Final: 2500 - 550 = R$ 1.950,00</code>
+                 <strong class="block mt-2">Método 2 (Achar valor final):</strong>
+                 <code class="formula">Desconto de 22% = Pagar 78% do valor (100% - 22%)
+78% de 2500 = 0.78 * 2500 = R$ 1.950,00</code>`,
+            
+            q3: `<strong>Raciocínio:</strong> Regra de Três Composta. Vamos analisar as grandezas em relação às Páginas (x).
+                 <ul class="list-disc pl-5 mt-2">
+                     <li><strong>Impressoras:</strong> Mais impressoras -> Mais páginas (Direta)</li>
+                     <li><strong>Velocidade:</strong> Mais velocidade -> Mais páginas (Direta)</li>
+                     <li><strong>Horas:</strong> Menos horas -> Menos páginas (Direta)</li>
+                 </ul>
+                 <code class="formula">Páginas | Impressoras | Velocidade | Horas
+ 1000   |     5     |     V     |   4
+   x    |     10    |     2V    |   2
+
+1000/x = (5/10) * (V/2V) * (4/2)
+1000/x = (1/2) * (1/2) * (2)
+1000/x = 2 / 4
+1000/x = 1/2
+x = 2000 páginas</code>`,
+
+            q4: `<strong>Raciocínio:</strong> Aumentos e descontos sucessivos são calculados sobre o valor mais recente.
+                 <strong class="block mt-2">Passo 1 (Aumento de 20%):</strong>
+                 <code class="formula">80,00 * 1,20 (fator de aumento) = R$ 96,00</code>
+                 <strong class="block mt-2">Passo 2 (Desconto de 10% sobre o novo valor):</strong>
+                 <code class="formula">96,00 * 0,90 (fator de desconto) = R$ 86,40</code>
+                 <strong class="block mt-2">Resultado:</strong> O preço final é R$ 86,40.`,
+
+            q5: `<strong>Raciocínio:</strong> Área composta. Devemos calcular a área total (terreno) e subtrair a área interna (piscina).
+                 <strong class="block mt-2">Cálculo:</strong>
+                 <code class="formula">Área Terreno (Retângulo) = base * altura = 25m * 10m = 250 m²
+Área Piscina (Quadrado) = lado² = 8m * 8m = 64 m²
+Área Restante (Grama) = 250 - 64 = 186 m²</code>`,
+
+            q6: `<strong>Raciocínio:</strong> Teorema de Pitágoras. A escada, o prédio e o chão formam um triângulo retângulo.
+                 <ul class="list-disc pl-5 mt-2">
+                     <li>Escada = Hipotenusa (10 m)</li>
+                     <li>Distância do prédio = Cateto (6 m)</li>
+                     <li>Altura no prédio = Cateto (x)</li>
+                 </ul>
+                 <code class="formula">(Hipotenusa)² = (Cateto)² + (Cateto)²
+10² = 6² + x²
+100 = 36 + x²
+x² = 100 - 36
+x² = 64
+x = 8 metros</code>
+                 <strong class="block mt-2">Obs:</strong> Este é o famoso triângulo pitagórico 3-4-5, multiplicado por 2 (6-8-10).`,
+            
+            q7: `<strong>Raciocínio:</strong> A fórmula da área do círculo é A = π * r². O raio (r) foi dado como 10m.
+                 <strong class="block mt-2">Cálculo:</strong>
+                 <code class="formula">A = 3,14 * (10)²
+A = 3,14 * 100
+A = 314 m²</code>
+                 <strong class="block mt-2">Cuidado:</strong> A opção A (62,8) seria o comprimento da circunferência (2 * π * r).`,
+
+            q8: `<strong>Raciocínio:</strong> A fórmula da área do trapézio é A = ((Base maior + base menor) * altura) / 2.
+                 <strong class="block mt-2">Cálculo:</strong>
+                 <code class="formula">A = ((30 + 20) * 10) / 2
+A = (50 * 10) / 2
+A = 500 / 2
+A = 250 m²</code>`,
+
+            q9: `<strong>Raciocínio:</strong> Lógica (Leis de De Morgan). A negação de uma proposição "P <strong>E</strong> Q" é "Não-P <strong>OU</strong> Não-Q".
+                 <ul class="list-disc pl-5 mt-2">
+                     <li>Nega-se a primeira parte ("O carro não é azul").</li>
+                     <li>Troca-se o "E" por "OU".</li>
+                     <li>Nega-se a segunda parte ("a moto não é nova").</li>
+                 </ul>
+                 <strong class="block mt-2">Resultado:</strong> "O carro não é azul OU a moto não é nova."`,
+
+            q10: `<strong>Raciocínio:</strong> Lógica (Negação de Quantificadores). Para negar "Todos", basta que UM elemento falhe a condição.
+                 <strong class="block mt-2">Negação de "Todo A é B":</strong> "Pelo menos um A não é B" (ou "Algum A não é B", "Existe um A que não é B").
+                 <strong class="block mt-2">Cuidado:</strong> A negação de "Todos" NÃO é "Nenhum".`,
+
+            q11: `<strong>Raciocínio:</strong> Lógica (Equivalência da Condicional). A condicional "Se P, então Q" (P -> Q) tem uma equivalência principal chamada <strong>contrapositiva</strong>.
+                  <strong class="block mt-2">Fórmula:</strong> (P -> Q) é equivalente a (~Q -> ~P).
+                  <ul class="list-disc pl-5 mt-2">
+                     <li>P = "chove"</li>
+                     <li>Q = "levo o guarda-chuva"</li>
+                     <li>~Q = "não levo o guarda-chuva"</li>
+                     <li>~P = "não chove"</li>
+                  </ul>
+                  <strong class="block mt-2">Resultado:</strong> A frase "Se não levo o guarda-chuva, então não chove" é a equivalência correta.`,
+
+            q12: `<strong>Raciocínio:</strong> Verdades e Mentiras. Só 1 mente e só 1 é culpado.
+                 <ul class="list-disc pl-5 mt-2">
+                     <li>As frases do Analista ("Eu não sou") e do Gerente ("O Analista é") são <strong>contraditórias</strong>. Elas não podem ser ambas verdadeiras.</li>
+                     <li>Como só há UM mentiroso, um deles mente e o outro fala a verdade.</li>
+                     <li>Isso força o terceiro, o <strong>Diretor</strong> ("Eu não sou"), a estar falando a <strong>verdade</strong>.</li>
+                     <li>Se o Diretor fala a verdade, ele é inocente.</li>
+                     <li><strong>Hipótese 1: Analista mente.</strong> Se ele mente, ele É o culpado. O Gerente (que disse que ele era culpado) estaria falando a verdade. (Resultado: Culpado=Analista, Mente=Analista). Esta é a opção C.</li>
+                     <li><strong>Hipótese 2: Gerente mente.</strong> Se ele mente, o Analista NÃO é o culpado. O Analista (que disse "Eu não sou") estaria falando a verdade. Se Analista e Diretor são inocentes, o <strong>Culpado só pode ser o Gerente</strong>. (Resultado: Culpado=Gerente, Mente=Gerente). Esta é a opção B.</li>
+                 </ul>
+                 <strong class="block mt-2">Conclusão:</strong> Ambas B e C são logicamente possíveis. No entanto, a estrutura mais comum desses problemas é a B, onde o culpado mente sobre outra pessoa para desviar a atenção.`,
+        };
+        
+        // CORREÇÃO do gabarito da Q11
+        document.addEventListener('DOMContentLoaded', () => {
+             // Remover o 'data-correct' da opção D da Q11
+             const wrongAnswerQ11 = document.querySelector('input[name="q11"][value="d"]');
+             if(wrongAnswerQ11) wrongAnswerQ11.removeAttribute('data-correct');
+             
+             // Adicionar o 'data-correct' na opção B da Q11
+             const correctAnswerQ11 = document.querySelector('input[name="q11"][value="b"]');
+             if(correctAnswerQ11) correctAnswerQ11.setAttribute('data-correct', 'true');
+        });
+        
+        
+        // --- LÓGICA DO QUIZ ---
+
+        // Lógica do Botão "Começar Simulado"
+        const startButton = document.getElementById('start-quiz-button');
+        const startContainer = document.getElementById('start-quiz-container');
+        const quizSection = document.getElementById('quiz-section');
+        
+        startButton.addEventListener('click', () => {
+            startContainer.classList.add('hidden');
+            quizSection.classList.remove('hidden');
+            // Rola a tela para o início do quiz
+            quizSection.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+
+        // Lógica do Botão "Verificar Resultados"
+        const quizForm = document.getElementById('quiz-form');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreText = document.getElementById('score-text');
+        const feedbackArea = document.getElementById('feedback-area');
+        const totalQuestions = 12;
+
+        quizForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Impede o envio real do formulário
+            
+            let score = 0;
+            feedbackArea.innerHTML = ''; // Limpa o feedback anterior
+
+            // Itera por todas as questões
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionName = `q${i}`;
+                
+                // Encontra a resposta correta
+                const correctRadio = document.querySelector(`input[name="${questionName}"][data-correct="true"]`);
+                const correctValue = correctRadio.value;
+                const correctLabel = correctRadio.parentElement.textContent.trim();
+
+                // Encontra a resposta selecionada pelo usuário
+                const selectedRadio = document.querySelector(`input[name="${questionName}"]:checked`);
+                
+                // Encontra o container da questão e do feedback
+                const questionContainer = document.querySelector(`.quiz-question[data-question="${i}"]`);
+                const feedbackBox = questionContainer.querySelector('.feedback-container');
+
+                let feedbackHTML = '';
+
+                if (!selectedRadio) {
+                    // Usuário não respondeu
+                    feedbackHTML = `
+                        <strong class="text-yellow-700">Você não respondeu esta questão.</strong>
+                        <p class="mt-2">A resposta correta era: <strong>${correctLabel}</strong></p>`;
+                    feedbackBox.className = 'feedback-container feedback-incorrect'; 
+                } else {
+                    const selectedValue = selectedRadio.value;
+                    const selectedLabel = selectedRadio.parentElement.textContent.trim();
+
+                    if (selectedValue === correctValue) {
+                        // Resposta Correta
+                        score++;
+                        feedbackHTML = `<strong class="text-green-800">Correto!</strong> Você selecionou: <strong>${selectedLabel}</strong>`;
+                        feedbackBox.className = 'feedback-container feedback-correct';
+                    } else {
+                        // Resposta Incorreta
+                        feedbackHTML = `
+                            <strong class="text-red-800">Incorreto.</strong> Você selecionou: <strong>${selectedLabel}</strong>
+                            <p class="mt-2">A resposta correta era: <strong>${correctLabel}</strong></p>`;
+                        feedbackBox.className = 'feedback-container feedback-incorrect';
+                    }
+                }
+
+                // Adiciona a explicação detalhada
+                if (explanations[questionName]) {
+                    feedbackHTML += `<p class="explanation">${explanations[questionName]}</p>`;
+                }
+
+                feedbackBox.innerHTML = feedbackHTML;
+                feedbackBox.classList.remove('hidden');
+
+                // Clona o feedback para a área de resumo (no final da página)
+                const feedbackClone = feedbackBox.cloneNode(true);
+                const questionTitle = questionContainer.querySelector('legend').cloneNode(true);
+                const summaryBox = document.createElement('div');
+                summaryBox.classList.add('p-4', 'bg-gray-50', 'rounded-lg', 'border', 'border-gray-200');
+                summaryBox.appendChild(questionTitle);
+                summaryBox.appendChild(feedbackClone);
+                feedbackArea.appendChild(summaryBox);
+
+            }
+
+            // Mostra o placar final
+            scoreText.textContent = `Você acertou ${score} de ${totalQuestions} questões.`;
+            resultsContainer.classList.remove('hidden');
+
+            // Rola a tela para os resultados
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+
+    </script>
+
+</body>
+</html>
+
