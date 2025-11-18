@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador de Bingo Matemático</title>
+    <!-- Carrega o Tailwind CSS para estilos --><script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fonte personalizada */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Estilos da Imagem de Fundo */
+            background-image: url('https://img.freepik.com/vetores-gratis/cartaz-de-vencedor-de-loteria-de-bingo-em-estilo-realista-com-bolas-e-moedas-em-ilustracao-vetorial-de-fundo-azul-cintilante_1284-83632.jpg?semt=ais_hybrid&w=740&q=80');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-10 relative"> <!-- Adicionado 'relative' para o posicionamento do botão --><!-- Título com imagem --><div class="flex items-center justify-center gap-4 mb-8">
+            <!-- Adicionando a imagem do ninja --><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3jqJ25U_VgpqvA9tJF0koAey3h45N6NJdyQ&s" 
+                 alt="[Imagem de um ninja da matemática]" 
+                 class="w-12 h-12 md:w-16 md:h-16"
+                 onerror="this.src='https://placehold.co/64x64/3B82F6/FFFFFF?text=N'; this.onerror=null;"> <!-- Fallback caso a imagem falhe --><!-- Título atualizado --><h1 class="text-3xl md:text-4xl font-bold text-center text-blue-700">Bingo dos Ninjas da Matemática</h1>
+        </div>
+
+        <!-- Secção de Sorteio --><div class="text-center bg-gray-50 rounded-lg p-8 mb-8 shadow-inner">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Conta Sorteada:</h2>
+            
+            <!-- A conta sorteada aparece aqui --><div id="conta-display" class="h-24 flex items-center justify-center">
+                <p class="text-4xl md:text-5xl font-bold text-gray-800">...</p>
+            </div>
+            
+            <!-- Botões de Ação --><div class="flex flex-col sm:flex-row gap-4 justify-center mt-4">
+                <button id="btn-sortear" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    Sortear Próxima Conta
+                </button>
+                <button id="btn-reiniciar" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    Reiniciar
+                </button>
+            </div>
+        </div>
+
+        <!-- Botão para mostrar/esconder o histórico --><button id="btn-toggle-historico" class="absolute bottom-4 right-4 bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+            Mostrar Sorteados
+        </button>
+
+        <!-- Histórico de Sorteio (Inicialmente escondido) --><div id="historico-container" class="mb-8 hidden"> <!-- Removido 'hidden' do div externo para o container, e agora é controlado por JS --><h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">Ordem dos Sorteios</h3>
+            <div id="historico-display" class="w-full text-center text-gray-600 bg-gray-50 p-4 rounded-lg shadow-inner break-words" style="min-height: 50px; line-height: 1.75;">
+                Nenhum número sorteado ainda.
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- BASE DE DADOS DAS CONTAS ---
+        const TODAS_CONTAS = [
+            { id: 1, conta: "5 &div; 5 =", resultado: 1 }, { id: 2, conta: "2 &times; 1 =", resultado: 2 },
+            { id: 3, conta: "6 &div; 2 =", resultado: 3 }, { id: 4, conta: "2 &times; 2 =", resultado: 4 },
+            { id: 5, conta: "10 &div; 2 =", resultado: 5 }, { id: 6, conta: "3 &times; 2 =", resultado: 6 },
+            { id: 7, conta: "14 &div; 2 =", resultado: 7 }, { id: 8, conta: "4 &times; 2 =", resultado: 8 },
+            { id: 9, conta: "3 &times; 3 =", resultado: 9 }, { id: 10, conta: "5 &times; 2 =", resultado: 10 },
+            { id: 11, conta: "11 &times; 1 =", resultado: 11 }, { id: 12, conta: "6 &times; 2 =", resultado: 12 },
+            { id: 13, conta: "26 &div; 2 =", resultado: 13 }, { id: 14, conta: "7 &times; 2 =", resultado: 14 },
+            { id: 15, conta: "5 &times; 3 =", resultado: 15 }, { id: 16, conta: "4 &times; 4 =", resultado: 16 },
+            { id: 17, conta: "17 &times; 1 =", resultado: 17 }, { id: 18, conta: "9 &times; 2 =", resultado: 18 },
+            { id: 19, conta: "38 &div; 2 =", resultado: 19 }, { id: 20, conta: "10 &times; 2 =", resultado: 20 },
+            { id: 21, conta: "7 &times; 3 =", resultado: 21 }, { id: 22, conta: "11 &times; 2 =", resultado: 22 },
+            { id: 23, conta: "23 &times; 1 =", resultado: 23 }, { id: 24, conta: "8 &times; 3 =", resultado: 24 },
+            { id: 25, conta: "5 &times; 5 =", resultado: 25 }, { id: 26, conta: "13 &times; 2 =", resultado: 26 },
+            { id: 27, conta: "9 &times; 3 =", resultado: 27 }, { id: 28, conta: "7 &times; 4 =", resultado: 28 },
+            { id: 29, conta: "29 &times; 1 =", resultado: 29 }, { id: 30, conta: "10 &times; 3 =", resultado: 30 },
+            { id: 31, conta: "62 &div; 2 =", resultado: 31 }, { id: 32, conta: "8 &times; 4 =", resultado: 32 },
+            { id: 33, conta: "11 &times; 3 =", resultado: 33 }, { id: 34, conta: "17 &times; 2 =", resultado: 34 },
+            { id: 35, conta: "7 &times; 5 =", resultado: 35 }, { id: 36, conta: "6 &times; 6 =", resultado: 36 },
+            { id: 37, conta: "37 &times; 1 =", resultado: 37 }, { id: 38, conta: "19 &times; 2 =", resultado: 38 },
+            { id: 39, conta: "13 &times; 3 =", resultado: 39 }, { id: 40, conta: "8 &times; 5 =", resultado: 40 },
+            { id: 41, conta: "41 &times; 1 =", resultado: 41 }, { id: 42, conta: "7 &times; 6 =", resultado: 42 },
+            { id: 43, conta: "86 &div; 2 =", resultado: 43 }, { id: 44, conta: "11 &times; 4 =", resultado: 44 },
+            { id: 45, conta: "9 &times; 5 =", resultado: 45 }, { id: 46, conta: "23 &times; 2 =", resultado: 46 },
+            { id: 47, conta: "47 &times; 1 =", resultado: 47 }, { id: 48, conta: "8 &times; 6 =", resultado: 48 },
+            { id: 49, conta: "7 &times; 7 =", resultado: 49 }, { id: 50, conta: "10 &times; 5 =", resultado: 50 },
+            { id: 51, conta: "17 &times; 3 =", resultado: 51 }, { id: 52, conta: "13 &times; 4 =", resultado: 52 },
+            { id: 53, conta: "53 &times; 1 =", resultado: 53 }, { id: 54, conta: "9 &times; 6 =", resultado: 54 },
+            { id: 55, conta: "11 &times; 5 =", resultado: 55 }, { id: 56, conta: "8 &times; 7 =", resultado: 56 },
+            { id: 57, conta: "19 &times; 3 =", resultado: 57 }, { id: 58, conta: "29 &times; 2 =", resultado: 58 },
+            { id: 59, conta: "59 &times; 1 =", resultado: 59 }, { id: 60, conta: "12 &times; 5 =", resultado: 60 },
+            { id: 61, conta: "61 &times; 1 =", resultado: 61 }, { id: 62, conta: "31 &times; 2 =", resultado: 62 },
+            { id: 63, conta: "9 &times; 7 =", resultado: 63 }, { id: 64, conta: "8 &times; 8 =", resultado: 64 },
+            { id: 65, conta: "13 &times; 5 =", resultado: 65 }, { id: 66, conta: "11 &times; 6 =", resultado: 66 },
+            { id: 67, conta: "67 &times; 1 =", resultado: 67 }, { id: 68, conta: "17 &times; 4 =", resultado: 68 },
+            { id: 69, conta: "23 &times; 3 =", resultado: 69 }, { id: 70, conta: "10 &times; 7 =", resultado: 70 },
+            { id: 71, conta: "71 &times; 1 =", resultado: 71 }, { id: 72, conta: "9 &times; 8 =", resultado: 72 },
+            { id: 73, conta: "73 &times; 1 =", resultado: 73 }, { id: 74, conta: "37 &times; 2 =", resultado: 74 },
+            { id: 75, conta: "15 &times; 5 =", resultado: 75 }, { id: 76, conta: "19 &times; 4 =", resultado: 76 },
+            { id: 77, conta: "11 &times; 7 =", resultado: 77 }, { id: 78, conta: "13 &times; 6 =", resultado: 78 },
+            { id: 79, conta: "79 &times; 1 =", resultado: 79 }, { id: 80, conta: "10 &times; 8 =", resultado: 80 },
+            { id: 81, conta: "9 &times; 9 =", resultado: 81 }, { id: 82, conta: "41 &times; 2 =", resultado: 82 },
+            { id: 83, conta: "83 &times; 1 =", resultado: 83 }, { id: 84, conta: "12 &times; 7 =", resultado: 84 },
+            { id: 85, conta: "17 &times; 5 =", resultado: 85 }, { id: 86, conta: "43 &times; 2 =", resultado: 86 },
+            { id: 87, conta: "29 &times; 3 =", resultado: 87 }, { id: 88, conta: "11 &times; 8 =", resultado: 88 },
+            { id: 89, conta: "89 &times; 1 =", resultado: 89 }, { id: 90, conta: "10 &times; 9 =", resultado: 90 },
+            { id: 91, conta: "13 &times; 7 =", resultado: 91 }, { id: 92, conta: "23 &times; 4 =", resultado: 92 },
+            { id: 93, conta: "31 &times; 3 =", resultado: 93 }, { id: 94, conta: "47 &times; 2 =", resultado: 94 },
+            { id: 95, conta: "19 &times; 5 =", resultado: 95 }, { id: 96, conta: "12 &times; 8 =", resultado: 96 },
+            { id: 97, conta: "97 &times; 1 =", resultado: 97 }, { id: 98, conta: "14 &times; 7 =", resultado: 98 },
+            { id: 99, conta: "11 &times; 9 =", resultado: 99 }, { id: 100, conta: "10 &times; 10 =", resultado: 100 }
+        ];
+
+        // --- VARIÁVEIS GLOBAIS ---
+        let contasDisponiveis = [];
+        let historicoSorteio = [];
+        let contaAtual = null;
+
+        // --- ELEMENTOS DO DOM ---
+        const historicoContainer = document.getElementById('historico-container'); // O container inteiro da lista
+        const historicoDisplay = document.getElementById('historico-display');
+        const contaDisplay = document.querySelector('#conta-display p');
+        const btnSortear = document.getElementById('btn-sortear');
+        const btnReiniciar = document.getElementById('btn-reiniciar');
+        const btnToggleHistorico = document.getElementById('btn-toggle-historico'); // Novo botão
+
+        // --- FUNÇÕES DO JOGO ---
+
+        /**
+         * Inicia ou reinicia o jogo
+         */
+        function iniciarJogo() {
+            contasDisponiveis = [...TODAS_CONTAS];
+            historicoSorteio = [];
+            contaAtual = null;
+
+            contaDisplay.innerHTML = '...';
+            atualizarHistoricoDisplay();
+            
+            btnSortear.disabled = false;
+            btnSortear.textContent = 'Sortear Próxima Conta';
+
+            // Garante que o histórico está escondido ao reiniciar
+            historicoContainer.classList.add('hidden');
+            btnToggleHistorico.textContent = 'Mostrar Sorteados';
+        }
+
+        /**
+         * Sorteia uma nova conta, mostra, e revela automaticamente
+         */
+        function sortearConta() {
+            if (contasDisponiveis.length === 0) {
+                contaDisplay.innerHTML = 'Fim!';
+                btnSortear.disabled = true;
+                return;
+            }
+
+            btnSortear.disabled = true;
+            
+            const indiceSorteado = Math.floor(Math.random() * contasDisponiveis.length);
+            contaAtual = contasDisponiveis.splice(indiceSorteado, 1)[0];
+
+            contaDisplay.innerHTML = contaAtual.conta;
+            btnSortear.textContent = `Sorteando... (${contasDisponiveis.length})`;
+
+            setTimeout(() => {
+                historicoSorteio.push(contaAtual.resultado);
+                atualizarHistoricoDisplay();
+
+                if (contasDisponiveis.length > 0) {
+                    btnSortear.disabled = false;
+                    btnSortear.textContent = `Sortear Próxima Conta`;
+                } else {
+                    contaDisplay.innerHTML = 'Fim!';
+                    btnSortear.textContent = 'Jogo Encerrado';
+                }
+
+            }, 1500); // 1.5 segundos de espera
+        }
+
+        /**
+         * Atualiza a lista de histórico "lado a lado"
+         */
+        function atualizarHistoricoDisplay() {
+            if (historicoSorteio.length === 0) {
+                historicoDisplay.textContent = 'Nenhum número sorteado ainda.';
+            } else {
+                historicoDisplay.textContent = historicoSorteio.join(' - ');
+            }
+        }
+
+        /**
+         * Alterna a visibilidade do histórico
+         */
+        function toggleHistorico() {
+            historicoContainer.classList.toggle('hidden'); // Alterna a classe 'hidden'
+            if (historicoContainer.classList.contains('hidden')) {
+                btnToggleHistorico.textContent = 'Mostrar Sorteados';
+            } else {
+                btnToggleHistorico.textContent = 'Esconder Sorteados';
+            }
+        }
+
+        // --- INICIALIZAÇÃO E EVENTOS ---
+        btnSortear.addEventListener('click', sortearConta);
+        btnReiniciar.addEventListener('click', iniciarJogo);
+        btnToggleHistorico.addEventListener('click', toggleHistorico); // Evento para o novo botão
+        
+        document.addEventListener('DOMContentLoaded', iniciarJogo);
+
+    </script>
+</body>
+</html>
+
