@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show do Milhão - Matemática e Lógica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0c29;
+            background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+        }
+        .option-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-btn:not(:disabled):hover {
+            transform: scale(1.03);
+            background-color: #facc15; /* yellow-400 */
+        }
+        .correct {
+            background-color: #22c55e !important; /* green-500 */
+            color: white !important;
+            transform: scale(1.05);
+            border-color: #16a34a; /* green-600 */
+        }
+        .incorrect {
+            background-color: #ef4444 !important; /* red-500 */
+            color: white !important;
+            transform: scale(1.05);
+            border-color: #dc2626; /* red-600 */
+        }
+        .lifeline-btn:disabled {
+            background-color: #475569; /* slate-600 */
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .option-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        #continue-modal {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- Efeitos Sonoros -->
+    <audio id="correct-sound" src="https://media.vocaroo.com/mp3/118ndZZk6kIQ" preload="auto"></audio>
+    <audio id="incorrect-sound" src="https://media.vocaroo.com/mp3/1iZylEVorALN" preload="auto"></audio>
+
+    <!-- Tela Inicial Fullscreen -->
+    <div id="start-screen" class="fixed inset-0 z-50 flex flex-col justify-end items-center p-12" style="background-image: url('https://i.postimg.cc/q7Kn4Q8x/Design-sem-nome-2.png'); background-size: cover; background-position: center;">
+        <button id="start-btn" class="bg-yellow-400 text-slate-900 font-bold py-4 px-10 rounded-full text-2xl uppercase hover:bg-yellow-300 transition-all duration-300 shadow-2xl hover:shadow-yellow-400/50 transform hover:scale-105">
+            Começar Jogo
+        </button>
+    </div>
+
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div id="game-container" class="w-full max-w-3xl mx-auto">
+            <!-- Tela do Jogo -->
+            <div id="game-screen" class="hidden">
+                <div class="bg-slate-800/50 p-6 md:p-8 rounded-2xl shadow-lg border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <div id="question-header" class="mb-6 text-center">
+                            <h2 class="text-xl font-bold text-yellow-400">PERGUNTA <span id="question-number">1</span> / 6</h2>
+                            <p class="text-2xl font-black text-white mt-2">VALENDO R$ 1.000.000!</p>
+                        </div>
+                        <p id="question-text" class="text-3xl md:text-4xl font-bold leading-tight text-center min-h-[100px]"></p>
+                        <div id="options-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Opções serão inseridas aqui -->
+                        </div>
+                    </div>
+                     <div id="lifelines-container" class="mt-8 pt-6 border-t border-slate-700">
+                        <h3 class="text-center text-lg font-bold text-yellow-400 mb-4 uppercase">Ajudas</h3>
+                        <div class="flex justify-center items-center flex-wrap gap-4">
+                            <button id="swap-btn" class="lifeline-btn bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M21 21v-5h-5"/></svg>
+                                Trocar
+                            </button>
+                            <button id="bomb-btn" class="lifeline-btn bg-orange-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-700 transition-colors flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.25 9.75 16.5 12l-2.25 2.25"/><path d="m20.25 14.5-.9-2.43a1.5 1.5 0 0 0-2.7 0l-.9 2.43"/><path d="M14.291 19.564a2.5 2.5 0 1 0-4.582 0"/><path d="M12 15h.01"/><path d="M4.5 9.5a7.5 7.5 0 1 0 15 0 7.5 7.5 0 1 0-15 0Z"/></svg>
+                                50/50
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela Final -->
+    <div id="end-screen" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0,0,0,0.8);">
+        <div class="text-center bg-slate-900/90 border-2 border-yellow-400 p-10 rounded-2xl shadow-2xl">
+            <h2 id="end-title" class="text-5xl font-black text-yellow-400">Fim de Jogo!</h2>
+            <p id="end-message" class="mt-4 text-2xl text-slate-200"></p>
+            <button id="play-again-btn" class="mt-8 bg-yellow-400 text-slate-900 font-bold py-3 px-8 rounded-full text-xl uppercase hover:bg-yellow-300 transition-colors transform hover:scale-105">
+                Jogar Novamente
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Continuação -->
+    <div id="continue-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0,0,0,0.8);">
+        <div class="bg-slate-900 border-2 border-yellow-400 p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
+            <h3 class="text-3xl font-black text-yellow-400">RESPOSTA CERTA!</h3>
+            <p class="text-slate-300 mt-4 text-lg">Você acertou! Deseja continuar para a próxima pergunta?</p>
+            <div class="mt-8 flex justify-center gap-4">
+                <button id="stop-game-btn" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition-colors">Desistir</button>
+                <button id="continue-btn" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition-colors">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- BANCO DE DADOS DE PERGUNTAS (MATEMÁTICA E LÓGICA) ---
+        const questions = {
+            facil1: [ // Multiplicação e Divisão Simples (Tabuada) + Pegadinhas Fáceis
+                { question: "Quanto é 5 multiplicado por 6?", options: ["25", "30", "35", "11"], answer: 1 },
+                { question: "Quanto é 20 dividido por 4?", options: ["4", "5", "6", "16"], answer: 1 },
+                { question: "Quanto é 7 x 7?", options: ["14", "42", "49", "56"], answer: 2 },
+                { question: "Quanto é 18 ÷ 3?", options: ["6", "5", "9", "3"], answer: 0 },
+                { question: "Quanto é 8 x 4?", options: ["12", "24", "28", "32"], answer: 3 },
+                { question: "Quanto é 30 ÷ 5?", options: ["5", "6", "7", "8"], answer: 1 },
+                { question: "Quanto é 9 x 2?", options: ["11", "16", "18", "20"], answer: 2 },
+                { question: "Quanto é 100 dividido por 10?", options: ["1", "10", "100", "1000"], answer: 1 },
+                { question: "O que é que nasce grande e morre pequeno?", options: ["Árvore", "Pessoa", "Lápis", "Sol"], answer: 2 },
+                { question: "Quanto é 3 x 3?", options: ["6", "9", "12", "33"], answer: 1 },
+                { question: "Quanto é 14 ÷ 2?", options: ["7", "8", "12", "16"], answer: 0 },
+                { question: "Quanto é 6 x 4?", options: ["10", "18", "24", "28"], answer: 2 },
+                { question: "Quanto é 50 ÷ 10?", options: ["5", "10", "40", "60"], answer: 0 },
+                { question: "Quanto é 1 x 8?", options: ["1", "8", "9", "0"], answer: 1 },
+                { question: "Quanto é 21 ÷ 7?", options: ["3", "4", "7", "14"], answer: 0 },
+                { question: "Qual é a cor do cavalo branco de Napoleão?", options: ["Preto", "Marrom", "Branco", "Malhado"], answer: 2 },
+                { question: "Quanto é 5 x 5?", options: ["10", "20", "25", "50"], answer: 2 },
+                { question: "Quanto é 16 ÷ 4?", options: ["2", "4", "6", "8"], answer: 1 },
+                { question: "Quanto é 10 x 0?", options: ["0", "1", "10", "100"], answer: 0 },
+                { question: "Quanto é 24 ÷ 6?", options: ["3", "4", "5", "6"], answer: 1 },
+                { question: "Quanto é 8 x 8?", options: ["16", "56", "64", "72"], answer: 2 },
+                { question: "O que fica no meio de 'Paris'?", options: ["R", "I", "A", "P"], answer: 0 },
+                { question: "Quanto é 36 ÷ 6?", options: ["4", "5", "6", "7"], answer: 2 },
+                { question: "Quanto é 4 x 7?", options: ["11", "21", "24", "28"], answer: 3 },
+                { question: "Quanto é 40 ÷ 8?", options: ["4", "5", "6", "32"], answer: 1 },
+                { question: "Quanto é 6 x 3?", options: ["9", "15", "18", "21"], answer: 2 },
+                { question: "O que é que está no fim do arco-íris?", options: ["Um pote de ouro", "A letra U", "A letra S", "Nada"], answer: 2 },
+                { question: "Quanto é 9 ÷ 3?", options: ["3", "6", "9", "12"], answer: 0 },
+                { question: "Quanto é 2 x 8?", options: ["10", "14", "16", "18"], answer: 2 },
+                { question: "Quanto é 27 ÷ 3?", options: ["7", "8", "9", "10"], answer: 2 },
+                { question: "Quanto é 5 x 9?", options: ["14", "35", "40", "45"], answer: 3 },
+                { question: "Quanto é 12 ÷ 4?", options: ["3", "4", "8", "16"], answer: 0 },
+                { question: "O que é, o que é: tem coroa mas não é rei, tem escama mas não é peixe?", options: ["Abacaxi", "Relógio", "Cobra", "Alho"], answer: 0 },
+                { question: "Quanto é 7 x 3?", options: ["10", "21", "24", "28"], answer: 1 },
+                { question: "Quanto é 32 ÷ 4?", options: ["6", "7", "8", "9"], answer: 2 },
+                { question: "Quanto é 6 x 6?", options: ["12", "30", "36", "42"], answer: 2 },
+                { question: "Quanto é 42 ÷ 7?", options: ["5", "6", "7", "8"], answer: 1 },
+                { question: "Quanto é 8 x 5?", options: ["13", "30", "35", "40"], answer: 3 },
+                { question: "O que é que quanto mais se tira, maior fica?", options: ["Dinheiro", "Tempo", "Buraco", "Idade"], answer: 2 },
+                { question: "Quanto é 25 ÷ 5?", options: ["4", "5", "6", "20"], answer: 1 },
+                { question: "Quanto é 9 x 4?", options: ["13", "27", "32", "36"], answer: 3 },
+                { question: "Quanto é 15 ÷ 3?", options: ["3", "5", "12", "18"], answer: 1 },
+                { question: "Quanto é 3 x 8?", options: ["11", "21", "24", "27"], answer: 2 },
+                { question: "Quanto é 48 ÷ 8?", options: ["6", "7", "8", "40"], answer: 0 },
+                { question: "Quanto é 7 x 5?", options: ["12", "28", "35", "40"], answer: 2 },
+                { question: "O que é que quanto mais se lava, mais sujo fica?", options: ["O chão", "A água", "O sabão", "A roupa"], answer: 1 },
+                { question: "Quanto é 54 ÷ 9?", options: ["5", "6", "7", "8"], answer: 1 },
+                { question: "Quanto é 4 x 10?", options: ["14", "30", "40", "400"], answer: 2 },
+                { question: "Quanto é 28 ÷ 4?", options: ["6", "7", "8", "24"], answer: 1 },
+                { question: "Quanto é 9 x 6?", options: ["15", "45", "54", "63"], answer: 2 },
+                { question: "Quanto é 49 ÷ 7?", options: ["6", "7", "8", "9"], answer: 1 },
+                { question: "Quanto é 8 x 6?", options: ["14", "40", "48", "54"], answer: 2 },
+                { question: "Quanto é 63 ÷ 9?", options: ["6", "7", "8", "9"], answer: 1 },
+                { question: "Quanto é 5 x 7?", options: ["12", "30", "35", "42"], answer: 2 },
+                { question: "Quanto é 72 ÷ 8?", options: ["7", "8", "9", "10"], answer: 2 },
+                { question: "Quanto é 6 x 9?", options: ["15", "45", "54", "63"], answer: 2 },
+                { question: "O que é que tem 5 dedos, mas não é uma mão?", options: ["Um pé", "Uma luva", "Um garfo", "Um pente"], answer: 1 },
+                { question: "Quanto é 81 ÷ 9?", options: ["7", "8", "9", "10"], answer: 2 },
+                { question: "Quanto é 9 x 9?", options: ["18", "72", "81", "90"], answer: 2 },
+                { question: "Quanto é 56 ÷ 7?", options: ["6", "7", "8", "9"], answer: 2 }
+            ],
+            facil2: [ // M/D com Contexto Simples, Lógica Inicial + Pegadinhas Fáceis
+                { question: "Uma bicicleta tem 2 rodas. Quantas rodas têm 4 bicicletas?", options: ["6", "8", "10", "12"], answer: 1 },
+                { question: "Se 10 lápis são divididos para 2 estojos, quantos lápis em cada estojo?", options: ["2", "5", "8", "12"], answer: 1 },
+                { question: "Qual é o dobro de 8?", options: ["4", "10", "16", "18"], answer: 2 },
+                { question: "Qual é a metade de 20?", options: ["5", "10", "15", "40"], answer: 1 },
+                { question: "Um carro tem 4 portas. Quantas portas têm 3 carros?", options: ["7", "10", "12", "16"], answer: 2 },
+                { question: "Uma caixa tem 6 sucos. Quantos sucos há em 3 caixas?", options: ["9", "15", "18", "21"], answer: 2 },
+                { question: "O que pesa mais: 1kg de algodão ou 1kg de chumbo?", options: ["Algodão", "Chumbo", "Têm o mesmo peso", "Depende do volume"], answer: 2 },
+                { question: "Se 15 balas são divididas para 3 crianças, quantas balas cada uma ganha?", options: ["3", "4", "5", "12"], answer: 2 },
+                { question: "Qual número completa a sequência: 2, 4, 6, 8, ...?", options: ["9", "10", "12", "7"], answer: 1 },
+                { question: "Qual é o triplo de 5?", options: ["8", "10", "15", "20"], answer: 2 },
+                { question: "Um time de futebol tem 11 jogadores. Quantos jogadores em 2 times?", options: ["13", "20", "22", "24"], answer: 2 },
+                { question: "Eu tenho 3 maçãs. Se você pegar 2, com quantas você fica?", options: ["1", "2", "3", "5"], answer: 1 },
+                { question: "Tenho 12 ovos. Quantas caixas com 6 ovos eu posso montar?", options: ["2", "3", "4", "6"], answer: 0 },
+                { question: "Qual número completa a sequência: 5, 10, 15, 20, ...?", options: ["21", "22", "25", "30"], answer: 2 },
+                { question: "Uma semana tem 7 dias. Quantos dias têm 3 semanas?", options: ["10", "14", "21", "28"], answer: 2 },
+                { question: "Se 8 pessoas entram em 2 carros, quantas pessoas em cada carro?", options: ["2", "4", "6", "10"], answer: 1 },
+                { question: "Se um caderno custa 5 reais, quanto custam 4 cadernos?", options: ["9", "15", "20", "25"], answer: 2 },
+                { question: "O que é que sobe e desce, mas nunca sai do lugar?", options: ["Elevador", "Escada", "Termômetro", "Avião"], answer: 1 },
+                { question: "Qual é a metade de 14?", options: ["7", "8", "12", "28"], answer: 0 },
+                { question: "Uma aranha tem 8 patas. Quantas patas 2 aranhas têm?", options: ["10", "14", "16", "18"], answer: 2 },
+                { question: "Se 24 alunos são divididos em 4 grupos, quantos alunos por grupo?", options: ["4", "5", "6", "8"], answer: 2 },
+                { question: "Qual é o dobro de 10?", options: ["5", "12", "20", "100"], answer: 2 },
+                { question: "O que é que está sempre vindo, mas nunca chega?", options: ["A noite", "O vento", "O amanhã", "O passado"], answer: 2 },
+                { question: "Qual número completa a sequência: 10, 20, 30, ...?", options: ["31", "35", "40", "50"], answer: 2 },
+                { question: "Um pacote tem 5 figurinhas. Quantas figurinhas em 5 pacotes?", options: ["10", "15", "20", "25"], answer: 3 },
+                { question: "Se 18 chocolates são divididos para 6 amigos, quantos para cada um?", options: ["3", "4", "6", "12"], answer: 0 },
+                { question: "Qual é o triplo de 7?", options: ["10", "14", "21", "28"], answer: 2 },
+                { question: "Uma mão tem 5 dedos. Quantos dedos 4 mãos têm?", options: ["9", "15", "20", "25"], answer: 2 },
+                { question: "Tenho 30 reais. Quantas notas de 10 reais eu tenho?", options: ["3", "10", "20", "300"], answer: 0 },
+                { question: "O que é que tem boca mas não fala, tem leito mas não dorme?", options: ["O rio", "O bebê", "O travesseiro", "A caverna"], answer: 0 },
+                { question: "Qual número completa a sequência: 3, 6, 9, 12, ...?", options: ["13", "14", "15", "18"], answer: 2 },
+                { question: "Se um ônibus leva 10 pessoas, quantas viagens para levar 40 pessoas?", options: ["4", "5", "30", "50"], answer: 0 },
+                { question: "Qual é a metade de 16?", options: ["4", "8", "10", "32"], answer: 1 },
+                { question: "Uma flor tem 5 pétalas. Quantas pétalas 3 flores têm?", options: ["8", "10", "15", "20"], answer: 2 },
+                { question: "Qual a única palavra que está sempre escrita 'errado'?", options: ["Correto", "Certo", "Errado", "Incorreto"], answer: 2 },
+                { question: "Se 21 dias são 3 semanas, quantos dias tem 1 semana?", options: ["5", "6", "7", "8"], answer: 2 },
+                { question: "Qual é o dobro de 9?", options: ["11", "16", "18", "27"], answer: 2 },
+                { question: "Tenho 14 meias. Quantos pares de meias eu tenho?", options: ["7", "14", "21", "28"], answer: 0 },
+                { question: "Um ano tem 12 meses. Quantos meses têm 2 anos?", options: ["14", "20", "24", "26"], answer: 2 },
+                { question: "O que é que tem pescoço e não tem cabeça, tem braços e não tem mãos?", options: ["A camisa", "O rio", "A garrafa", "A cadeira"], answer: 0 },
+                { question: "Se 50 doces são divididos para 10 crianças, quantos doces cada uma ganha?", options: ["5", "10", "40", "60"], answer: 0 },
+                { question: "Qual número completa a sequência: 9, 8, 7, 6, ...?", options: ["10", "7", "5", "4"], answer: 2 },
+                { question: "Se um livro custa 10 reais, quanto custam 5 livros?", options: ["15", "20", "50", "100"], answer: 2 },
+                { question: "Qual é a metade de 22?", options: ["10", "11", "12", "44"], answer: 1 },
+                { question: "Uma década tem 10 anos. Quantos anos têm 3 décadas?", options: ["13", "20", "30", "300"], answer: 2 },
+                { question: "Se 36 lápis são guardados em 6 estojos, quantos lápis por estojo?", options: ["4", "5", "6", "7"], answer: 2 },
+                { question: "O que é que quanto mais se perde, mais se tem?", options: ["Dinheiro", "Tempo", "Amigos", "O sono"], answer: 3 },
+                { question: "Qual é o triplo de 4?", options: ["7", "8", "12", "16"], answer: 2 },
+                { question: "Se um dia tem 24 horas, quantas horas têm 2 dias?", options: ["26", "36", "48", "12"], answer: 2 },
+                { question: "Qual número completa a sequência: 4, 8, 12, 16, ...?", options: ["18", "20", "22", "24"], answer: 1 },
+                { question: "Se 4 carros precisam de 4 motoristas, quantos motoristas 1 carro precisa?", options: ["1", "2", "4", "8"], answer: 0 },
+                { question: "Qual é o dobro de 15?", options: ["10", "17", "30", "45"], answer: 2 },
+                { question: "Tenho 25 reais. Quantas notas de 5 reais eu tenho?", options: ["4", "5", "6", "20"], answer: 1 },
+                { question: "O que é que se quebra quando se fala?", options: ["O copo", "A promessa", "O segredo", "O ovo"], answer: 2 },
+                { question: "Um hotel tem 5 andares com 10 quartos em cada. Quantos quartos o hotel tem?", options: ["15", "45", "50", "500"], answer: 2 },
+                { question: "Se 40 cadeiras são arrumadas em 5 fileiras, quantas cadeiras por fileira?", options: ["4", "5", "8", "9"], answer: 2 },
+                { question: "Qual é a metade de 30?", options: ["10", "15", "20", "60"], answer: 1 },
+                { question: "Um pacote de balas custa 3 reais. Quanto custam 6 pacotes?", options: ["9", "12", "18", "21"], answer: 2 },
+                { question: "Qual é o triplo de 10?", options: ["13", "20", "30", "100"], answer: 2 },
+                { question: "O que é que anda com os pés na cabeça?", options: ["O piolho", "A cobra", "O chapéu", "O bebê"], answer: 0 },
+                { question: "Quanto é 2 x 2 x 2?", options: ["4", "6", "8", "10"], answer: 2 }
+            ],
+            medio1: [ // Aritmética 2-passos e Lógica/Pegadinha Média
+                { question: "Ana comprou 3 caixas com 6 lápis cada e deu 2 lápis para seu irmão. Com quantos lápis ela ficou?", options: ["18", "16", "15", "20"], answer: 1 },
+                { question: "Um filme de 90 minutos começa às 10h10. Que horas ele termina?", options: ["11h40", "11h30", "12h00", "11h50"], answer: 0 },
+                { question: "Quantos meses do ano têm 28 dias?", options: ["1", "2", "Nenhum", "Todos"], answer: 3 },
+                { question: "Um pai tem 40 anos e seu filho 10. Daqui a 5 anos, qual será a soma das idades?", options: ["50", "55", "60", "65"], answer: 2 },
+                { question: "Se 4 laranjas fazem 1 copo de suco, quantos copos 20 laranjas fazem?", options: ["4", "5", "6", "80"], answer: 1 },
+                { question: "Pedro corre 5 km por dia. Quantos km ele corre em duas semanas?", options: ["35 km", "50 km", "70 km", "100 km"], answer: 2 },
+                { question: "Um ônibus saiu com 30 passageiros. Na primeira parada, desceram 10 e subiram 5. Quantos passageiros seguiram viagem?", options: ["15", "20", "25", "30"], answer: 2 },
+                { question: "Um avião está voando. Se ele cair na fronteira entre Brasil e Argentina, onde os sobreviventes devem ser enterrados?", options: ["No Brasil", "Na Argentina", "Onde quiserem", "Em lugar nenhum"], answer: 3 },
+                { question: "Qual é o dobro da metade de 50?", options: ["25", "50", "100", "12.5"], answer: 1 },
+                { question: "Se um produto custa R$ 50 e eu tenho 3 notas de R$ 20, quanto receberei de troco?", options: ["R$ 10", "R$ 20", "R$ 30", "R$ 60"], answer: 0 },
+                { question: "Uma turma tem 30 alunos. Metade são meninos. Quantas são as meninas?", options: ["10", "15", "20", "30"], answer: 1 },
+                { question: "Um trem elétrico viaja para o sul a 100 km/h. O vento sopra para o norte a 10 km/h. Para que lado vai a fumaça?", options: ["Norte", "Sul", "Leste", "Nenhuma das opções"], answer: 3 },
+                { question: "Tenho 100 reais. Gastei metade em uma blusa. Com o que restou, comprei 5 meias. Quanto custou cada meia?", options: ["R$ 50", "R$ 20", "R$ 10", "R$ 5"], answer: 2 },
+                { question: "Um fazendeiro tem 17 ovelhas. Todas, exceto 9, morrem. Quantas ovelhas vivas restaram?", options: ["17", "9", "8", "0"], answer: 1 },
+                { question: "Uma receita pede 2 ovos para 1 bolo. Quantos ovos para 5 bolos?", options: ["7", "8", "10", "12"], answer: 2 },
+                { question: "O que vem depois na sequência: J, F, M, A, ...?", options: ["M", "J", "S", "D"], answer: 0 },
+                { question: "Comprei 4 pizzas de 8 fatias. Quantas fatias comprei?", options: ["12", "24", "32", "36"], answer: 2 },
+                { question: "Se ontem fosse amanhã, hoje seria sexta-feira. Que dia é hoje?", options: ["Quinta", "Sexta", "Sábado", "Quarta"], answer: 3 },
+                { question: "Um carro anda 10 km com 1 litro de gasolina. Quantos litros para andar 50 km?", options: ["5", "10", "50", "500"], answer: 0 },
+                { question: "Um pote tem 50 balas. Paulo pegou 10 e Ana pegou 15. Quantas balas sobraram?", options: ["25", "30", "35", "40"], answer: 0 },
+                { question: "Existem 10 pássaros num galho. Um caçador atira e mata 3. Quantos pássaros ficam no galho?", options: ["7", "10", "0", "3"], answer: 2 },
+                { question: "Qual é o valor de 100 dividido por meio?", options: ["50", "100", "200", "0.5"], answer: 2 },
+                { question: "Dois pais e dois filhos foram pescar. Cada um pescou um peixe. No total, foram 3 peixes. Como isso é possível?", options: ["Um peixe fugiu", "Eram 3 pessoas", "Um não pescou", "Mentiram"], answer: 1 },
+                { question: "Quanto é 5 x 5 + 5?", options: ["50", "30", "15", "35"], answer: 1 },
+                { question: "Um médico lhe receita 3 pílulas para tomar, uma a cada meia hora. Quanto tempo levará para tomar todas?", options: ["Meia hora", "Uma hora", "Uma hora e meia", "Duas horas"], answer: 1 },
+                { question: "Quanto é 20 + 10 x 2?", options: ["60", "40", "32", "22"], answer: 1 },
+                { question: "Um terreno retangular tem 20m de comprimento e 10m de largura. Qual é o perímetro?", options: ["30 m", "200 m", "60 m", "100 m"], answer: 2 },
+                { question: "Você entra em uma sala escura com um fósforo. Há uma vela, um lampião e uma lareira. O que você acende primeiro?", options: ["A vela", "O lampião", "A lareira", "O fósforo"], answer: 3 },
+                { question: "Numa corrida, você ultrapassa o segundo colocado. Em que posição você fica?", options: ["Primeiro", "Segundo", "Terceiro", "Último"], answer: 1 },
+                { question: "O que pesa mais: 1kg de algodão ou 1kg de chumbo?", options: ["Algodão", "Chumbo", "Têm o mesmo peso", "Depende do volume"], answer: 2 },
+                { question: "Um caracol sobe um muro de 10 metros. De dia ele sobe 3 metros e à noite escorrega 2 metros. Em quantos dias ele chega ao topo?", options: ["10 dias", "9 dias", "8 dias", "7 dias"], answer: 2 },
+                { question: "Qual é o valor de 50 dividido por meio, mais 10?", options: ["35", "60", "110", "20"], answer: 2 },
+                { question: "Um pato bota um ovo na divisa entre Brasil e Chile. A quem pertence o ovo?", options: ["Brasil", "Chile", "Dos dois", "Pato não bota ovo"], answer: 3 },
+                { question: "Se 1 é 5, 2 é 10, 3 é 15, 4 é 20, quanto é 5?", options: ["25", "1", "30", "50"], answer: 1 },
+                { question: "Qual palavra não pertence ao grupo: Maçã, Banana, Batata, Laranja?", options: ["Maçã", "Banana", "Batata", "Laranja"], answer: 2 },
+                { question: "Qual é a cor do cavalo branco de Napoleão?", options: ["Preto", "Marrom", "Branco", "Malhado"], answer: 2 },
+                { question: "Eu tenho 3 maçãs. Se você pegar 2, com quantas você fica?", options: ["1", "2", "3", "5"], answer: 1 },
+                { question: "O que fica no meio de 'Paris'?", options: ["R", "I", "A", "P"], answer: 0 },
+                { question: "O que é que quanto mais se tira, maior fica?", options: ["Dinheiro", "Tempo", "Buraco", "Idade"], answer: 2 },
+                { question: "Um pai tem 4 filhas. Cada filha tem 1 irmão. Quantos filhos o pai tem no total?", options: ["8", "4", "5", "9"], answer: 2 },
+                { question: "O que é que nasce grande e morre pequeno?", options: ["Árvore", "Pessoa", "Lápis", "Sol"], answer: 2 },
+                { question: "Um pastor tem 15 ovelhas. Vende todas, exceto 8. Quantas ovelhas restaram?", options: ["15", "7", "8", "0"], answer: 2 },
+                { question: "Quantos animais de cada espécie Moisés levou na arca?", options: ["2", "1", "7", "Nenhum"], answer: 3 },
+                { question: "Um galo bota um ovo no telhado. Para que lado o ovo rola?", options: ["Direita", "Esquerda", "Para baixo", "Nenhum"], answer: 3 },
+                { question: "O que é que está no fim do arco-íris?", options: ["Um pote de ouro", "A letra U", "A letra S", "Nada"], answer: 2 },
+                { question: "Ana é mãe de Bia. Bia é mãe de Carla. O que Ana é de Carla?", options: ["Mãe", "Tia", "Irmã", "Avó"], answer: 3 },
+                { question: "Quanto é 100 - 50 ÷ 5?", options: ["10", "90", "95", "50"], answer: 1 },
+                { question: "Um pai deu 10 reais para cada um de seus 3 filhos. Cada filho comprou um doce de 2 reais. Quanto sobrou para os filhos no total?", options: ["R$ 24", "R$ 8", "R$ 30", "R$ 6"], answer: 0 },
+                { question: "Qual é a metade do dobro de 100?", options: ["50", "100", "200", "400"], answer: 1 },
+                { question: "O que é, o que é: tem coroa mas não é rei, tem escama mas não é peixe?", options: ["Abacaxi", "Relógio", "Cobra", "Alho"], answer: 0 },
+                { question: "O que é que tem 8 pernas mas não anda?", options: ["Uma aranha morta", "Duas cadeiras", "4 pares de meias", "Uma mesa"], answer: 1 },
+                { question: "Qual o próximo: 2, 10, 12, 16, 17, 18, 19, ...?", options: ["20", "21", "200", "30"], answer: 2 },
+                { question: "O que é que quanto mais se seca, mais molhado fica?", options: ["A toalha", "O gelo", "O chão", "O pão"], answer: 0 },
+                { question: "O que é que entra na água e não se molha?", options: ["A luz", "O som", "A sombra", "O vento"], answer: 2 },
+                { question: "Eu tenho um lago em casa, mas nunca água. O que é?", options: ["Um desenho", "O espelho", "Um buraco", "Um lago seco"], answer: 1 },
+                { question: "Quanto é 1/2 + 1/4?", options: ["1/6", "2/6", "3/4", "1/8"], answer: 2 },
+                { question: "O que é que tem 6 faces, mas não usa maquiagem, e 21 olhos, mas não pode ver?", options: ["Um monstro", "Um dado", "Um baralho", "Uma multidão"], answer: 1 },
+                { question: "O dobro de 50 dividido por um quinto de 50 é:", options: ["100", "20", "10", "50"], answer: 2 },
+                { question: "Se um homem leva 1 hora para cavar 1 buraco, quanto tempo 2 homens levam para cavar meio buraco?", options: ["2 horas", "1 hora", "30 minutos", "Não dá pra cavar meio buraco"], answer: 3 },
+                { question: "O que é que tem chaves, mas não abre portas?", options: ["Um teclado", "Um mapa", "Um piano", "Um rio"], answer: 2 },
+                { question: "Se você está em uma sala escura com uma vela, uma lâmpada a óleo e lenha, e você tem apenas um fósforo, o que você acende primeiro?", options: ["A vela", "A lâmpada", "A lenha", "O fósforo"], answer: 3 }
+            ],
+            medio2: [ // Aritmética Média, Lógica Média/Difícil
+                { question: "Qual o próximo número: 1, 4, 9, 16, 25, ...?", options: ["30", "32", "36", "40"], answer: 2 },
+                { question: "A soma das idades de pai e filho é 40 anos. O pai tem o triplo da idade do filho. Qual a idade do pai?", options: ["30", "28", "32", "35"], answer: 0 },
+                { question: "Em um campeonato, 8 times jogam todos contra todos, uma única vez. Quantas partidas são disputadas?", options: ["64", "56", "32", "28"], answer: 3 },
+                { question: "Um estudante precisa de média 7. Suas notas nas duas primeiras provas foram 5 e 6. Quanto ele precisa tirar na terceira prova?", options: ["7", "8", "9", "10"], answer: 2 },
+                { question: "Qual o valor de 2 + 2 x 2 - 2 ÷ 2?", options: ["4", "5", "6", "2"], answer: 1 },
+                { question: "Um relógio adianta 3 minutos a cada 2 horas. Se foi acertado ao meio-dia, que horas marcará às 20h?", options: ["20:06", "20:12", "20:24", "20:08"], answer: 1 },
+                { question: "Qual o próximo número: 1, 1, 2, 3, 5, 8, ...?", options: ["10", "11", "12", "13"], answer: 3 },
+                { question: "Um elevador sobe 2 andares, desce 5, sobe 8, desce 3. Se parou no 10º andar, de qual andar partiu?", options: ["8º", "5º", "12º", "10º"], answer: 0 },
+                { question: "Um pai é 24 anos mais velho que o filho. Daqui a 2 anos, a idade do pai será o triplo da do filho. Qual a idade do pai hoje?", options: ["30", "32", "34", "36"], answer: 2 },
+                { question: "Um copo tem 1 parte de suco para 3 de água. Que fração do líquido é suco?", options: ["1/3", "1/4", "3/4", "1/2"], answer: 1 },
+                { question: "Uma empresa tem 100 funcionários. 70 falam inglês, 50 espanhol, e 10 não falam nenhum. Quantos falam ambas as línguas?", options: ["10", "20", "30", "40"], answer: 2 },
+                { question: "Quanto é 999 - 99 + 9?", options: ["900", "909", "891", "918"], answer: 3 },
+                { question: "Se A é mais velho que B, e C é mais novo que B, qual a relação entre A e C?", options: ["A > C", "C > A", "A = C", "Não se pode afirmar"], answer: 0 },
+                { question: "Um carro percorre 120 km em 2 horas. Qual sua velocidade média?", options: ["60 km/h", "122 km/h", "240 km/h", "118 km/h"], answer: 0 },
+                { question: "Qual o próximo número: 1, 2, 4, 8, 16, ...?", options: ["20", "24", "32", "64"], answer: 2 },
+                { question: "Se 1/5 de um número é 20, quanto é o número?", options: ["4", "50", "80", "100"], answer: 3 },
+                { question: "Qual o resultado de 10 - 10 x 10 + 10?", options: ["10", "0", "100", "-80"], answer: 3 },
+                { question: "Se um guarda-noturno morre de dia, ele recebe pensão?", options: ["Sim", "Não", "Metade", "Depende"], answer: 1 },
+                { question: "O que tem 4 pernas de manhã, 2 ao meio-dia e 3 à noite?", options: ["Cadeira", "Mesa", "O Homem", "Cachorro"], answer: 2 },
+                { question: "Um homem está olhando um retrato. Alguém pergunta 'De quem é?'. Ele diz: 'Irmãos e irmãs eu não tenho, mas o pai desse homem é filho do meu pai.' De quem é o retrato?", options: ["Dele mesmo", "Do seu filho", "Do seu pai", "Do seu sobrinho"], answer: 1 },
+                { question: "Qual letra vem depois: U, D, T, Q, C, S, ...?", options: ["S", "O", "P", "R"], answer: 0 },
+                { question: "Quanto é a metade de dois mais dois?", options: ["1", "2", "3", "4"], answer: 2 },
+                { question: "Se 5 máquinas fazem 5 peças em 5 minutos, em quanto tempo 1 máquina faz 1 peça?", options: ["1 min", "5 min", "10 min", "25 min"], answer: 1 },
+                { question: "Se 3x + 5 = 20, qual o valor de x?", options: ["3", "4", "5", "6"], answer: 2 },
+                { question: "A soma de dois números é 21 e a diferença é 5. Qual o produto deles?", options: ["100", "104", "110", "96"], answer: 1 },
+                { question: "Qual é o próximo número: 2, 3, 5, 7, 11, ...?", options: ["12", "13", "14", "15"], answer: 1 },
+                { question: "Se 3 gatos comem 3 ratos em 3 minutos, em quanto tempo 10 gatos comeriam 10 ratos?", options: ["10 minutos", "1 minuto", "3 minutos", "30 minutos"], answer: 2 },
+                { question: "Um avião decolou com 150 assentos ocupados (3/4 da capacidade). Qual a capacidade total?", options: ["200", "225", "250", "180"], answer: 0 },
+                { question: "Um terreno foi dividido. Um ficou com 3/5 e o outro com 400 m² restantes. Qual a área total?", options: ["600 m²", "800 m²", "1000 m²", "1200 m²"], answer: 2 },
+                { question: "Se 2/3 de um número é 30, quanto é 1/5 desse número?", options: ["45", "9", "15", "20"], answer: 1 },
+                { question: "Qual a área de um retângulo com perímetro 30 cm e comprimento sendo o dobro da largura?", options: ["50 cm²", "60 cm²", "45 cm²", "55 cm²"], answer: 0 },
+                { question: "Se o antecessor do dobro de um número é 19, que número é esse?", options: ["9", "10", "11", "12"], answer: 1 },
+                { question: "Hoje, a idade de um pai é o quádruplo da do filho. Daqui a 5 anos, será o triplo. Qual a idade do pai hoje?", options: ["32", "36", "40", "44"], answer: 2 },
+                { question: "A média de 4 números é 20. Se três são 10, 15 e 25, qual é o quarto?", options: ["20", "30", "35", "40"], answer: 2 },
+                { question: "Se um tijolo pesa 2 kg mais meio tijolo, quanto pesam dois tijolos?", options: ["4 kg", "6 kg", "8 kg", "10 kg"], answer: 2 },
+                { question: "Um número multiplicado por 3, somado a 10, resulta em 55. Que número é esse?", options: ["10", "15", "20", "25"], answer: 1 },
+                { question: "Se 5 gatos pegam 5 ratos em 5 minutos, quantos gatos pegam 100 ratos em 100 minutos?", options: ["100", "50", "10", "5"], answer: 3 },
+                { question: "Se 1/4 da metade de um número é 5, que número é esse?", options: ["10", "20", "30", "40"], answer: 3 },
+                { question: "A soma de 5 números pares consecutivos é 100. Qual é o maior deles?", options: ["20", "22", "24", "26"], answer: 2 },
+                { question: "O que é que se você vira de cabeça para baixo, vale mais?", options: ["O número 6", "O número 9", "Um copo", "Um mapa"], answer: 0 },
+                { question: "Um livro e uma caneta custam R$ 110. O livro custa R$ 100 A MAIS que a caneta. Quanto custa a caneta?", options: ["R$ 10", "R$ 5", "R$ 15", "R$ 1"], answer: 1 },
+                { question: "O que é que tem no meio do ovo?", options: ["A gema", "A clara", "A letra V", "Nada"], answer: 2 },
+                { question: "O que é que nunca volta, embora nunca tenha ido?", options: ["O tempo", "O vento", "O ontem", "O sol"], answer: 2 },
+                { question: "Qual a pergunta que você nunca pode responder 'sim'?", options: ["Você está vivo?", "Você está dormindo?", "Você me ouve?", "Você é humano?"], answer: 1 },
+                { question: "Se A = 1, B = 2, C = 3... Qual o valor da palavra 'GATO' (soma)?", options: ["26", "27", "28", "29"], answer: 1 },
+                { question: "Se 3x = 30, quanto é 2x?", options: ["10", "15", "20", "30"], answer: 2 },
+                { question: "Paguei R$ 35 com 10 moedas, umas de R$ 2 e outras de R$ 5. Quantas moedas de R$ 5 usei?", options: ["3", "4", "5", "6"], answer: 2 },
+                { question: "Em uma fazenda há galinhas e coelhos, num total de 20 cabeças e 56 pés. Quantos coelhos há?", options: ["10", "12", "8", "6"], answer: 2 },
+                { question: "Numa prova de 50 questões, cada acerto vale 2 pontos e cada erro anula 1 ponto. Se um aluno fez 85 pontos, quantas acertou?", options: ["40", "42", "45", "48"], answer: 2 },
+                { question: "Se um time ganha 5 pontos por vitória e perde 2 por derrota. Após 10 jogos, tem 29 pontos. Quantas vitórias teve?", options: ["5", "6", "7", "8"], answer: 2 },
+                { question: "Se eu te dou R$ 10, ficamos iguais. Se você me dá R$ 10, eu fico com o dobro do que você tem. Quanto eu tenho?", options: ["R$ 50", "R$ 40", "R$ 60", "R$ 30"], answer: 0 },
+                { question: "Se hoje eu tenho o dobro da sua idade, mas há 5 anos eu tinha o triplo, qual a minha idade?", options: ["20", "30", "40", "10"], answer: 0 },
+                { question: "Qual o próximo número: 1, 4, 5, 6, 7, 9, 11, ...?", options: ["13", "100", "12", "15"], answer: 1 },
+                { question: "O que é que quanto mais se perde, mais se tem?", options: ["Dinheiro", "Tempo", "Amigos", "O sono"], answer: 3 },
+                { question: "Qual o próximo: D, S, T, Q, Q, S, S, ...?", options: ["D", "T", "Q", "O"], answer: 3 },
+                { question: "Eu não tenho voz, mas posso te ensinar tudo. Eu não tenho olhos, mas te mostro o mundo. O que eu sou?", options: ["Um espelho", "Um livro", "Um professor", "Um mapa"], answer: 1 },
+                { question: "O que é que tem 8 pernas mas não anda?", options: ["Uma aranha morta", "Duas cadeiras", "4 pares de meias", "Uma mesa"], answer: 1 },
+                { question: "O que é que tem chaves, mas não abre portas?", options: ["Um teclado", "Um mapa", "Um piano", "Um rio"], answer: 2 },
+                { question: "Qual o próximo número: 1, 10, 11, 100, 101, 110, ...?", options: ["111", "1000", "200", "1101"], answer: 0 },
+                { question: "Um homem está em um quarto. Há uma mesa e um espelho. Ele se vê no espelho. O que ele viu?", options: ["Seu reflexo", "O 'vi' (verbo)", "Nada", "Um fantasma"], answer: 0 }
+            ],
+            dificil1: [ // Lógica difícil e "Pegadinhas"
+                { question: "Numa gaveta há 10 meias brancas e 10 pretas. Quantas meias você precisa tirar no escuro para GARANTIR um par da mesma cor?", options: ["2", "3", "11", "20"], answer: 1 },
+                { question: "Um tijolo pesa 1kg mais meio tijolo. Quanto pesa um tijolo?", options: ["1 kg", "1.5 kg", "2 kg", "2.5 kg"], answer: 2 },
+                { question: "Em um lago, há vitórias-régias. A cada dia, elas dobram de área. Se levam 30 dias para cobrir o lago, quantos dias levam para cobrir metade?", options: ["15 dias", "10 dias", "25 dias", "29 dias"], answer: 3 },
+                { question: "Qual é o próximo número: 1, 11, 21, 1211, 111221, ...?", options: ["211211", "312211", "1112221", "132112"], answer: 1 },
+                { question: "O que é que tem cidades, mas não tem casas; florestas, mas não tem árvores; e rios, mas não tem água?", options: ["Um sonho", "Um desenho", "Um mapa", "Um livro"], answer: 2 },
+                { question: "Dois pais e dois filhos dividem 3 barras de chocolate igualmente. Cada um fica com uma barra inteira. Como?", options: ["Um comeu 2", "Eram 3 pessoas", "A mãe comeu", "As barras eram grandes"], answer: 1 },
+                { question: "O que é que quanto mais se cozinha, mais duro fica?", options: ["Batata", "Macarrão", "Pedra", "Ovo"], answer: 3 },
+                { question: "Eu tenho duas moedas que somam 30 centavos. Uma delas não é de 25 centavos. Quais são as moedas?", options: ["Duas de 15", "Três de 10", "Uma de 25 e uma de 5", "Uma de 20 e uma de 10"], answer: 2 },
+                { question: "Se um avião cai na fronteira dos EUA e Canadá, e metade dos passageiros era brasileira, onde os brasileiros são enterrados?", options: ["No Brasil", "Nos EUA", "No Canadá", "Em lugar nenhum"], answer: 3 },
+                { question: "O que é que você pode segurar com a mão esquerda, mas nunca com a direita?", options: ["Um peso", "Sua mão direita", "Um segredo", "Nada"], answer: 1 },
+                { question: "Um homem mora no 10º andar. Ele pega o elevador até o térreo todo dia. Na volta, sobe de escada do 7º ao 10º. Por quê?", options: ["Gosta de exercício", "O elevador está quebrado", "Ele é anão", "Esqueceu a chave"], answer: 2 },
+                { question: "Se 1 é 5, 2 é 10, 3 é 15, 4 é 20, o que é 5?", options: ["25", "1", "30", "50"], answer: 0 },
+                { question: "Se 5 ratos comem 5 queijos em 5 minutos, 1 rato come 1 queijo em quantos minutos?", options: ["1", "5", "10", "25"], answer: 1 },
+                { question: "Um número de 3 algarismos é par, múltiplo de 5, e a soma de seus algarismos é 10. O das centenas é o triplo do das dezenas. Que número é esse?", options: ["620", "310", "910", "Nenhuma das opções"], answer: 0 },
+                { question: "Um pai tem 32 anos e seu filho 8. Daqui a quantos anos a idade do pai será o triplo da do filho?", options: ["2 anos", "3 anos", "4 anos", "5 anos"], answer: 2 },
+                { question: "Se o produto de dois números é 96 e a soma é 20, qual é a diferença entre eles?", options: ["8", "4", "6", "10"], answer: 1 },
+                { question: "Quantos caminhos diferentes existem para ir do ponto A ao B numa grade 2x2, movendo-se apenas para a direita e para baixo?", options: ["4", "5", "6", "8"], answer: 2 },
+                { question: "Um número dividido por 5 deixa resto 3. O quociente, dividido por 4, deixa resto 2. Se o segundo quociente é 1, qual o número?", options: ["23", "28", "33", "38"], answer: 2 },
+                { question: "Se 5 homens comem 5 laranjas em 5 minutos, em quantos minutos 15 homens comerão 15 laranjas?", options: ["1", "5", "15", "25"], answer: 1 },
+                { question: "Para numerar as páginas de um livro, um tipógrafo usou 204 algarismos. Quantas páginas tem o livro?", options: ["100", "104", "108", "112"], answer: 1 },
+                { question: "Se o dia depois de amanhã é 2 dias antes de uma sexta-feira, que dia é hoje?", options: ["Segunda", "Terça", "Quarta", "Domingo"], answer: 0 },
+                { question: "Um livro e uma caneta custam R$ 110. O livro custa R$ 100 A MAIS que a caneta. Quanto custa a caneta?", options: ["R$ 10", "R$ 5", "R$ 15", "R$ 1"], answer: 1 },
+                { question: "Se 3 gatos comem 3 ratos em 3 minutos, em quanto tempo 10 gatos comeriam 10 ratos?", options: ["10 minutos", "1 minuto", "3 minutos", "30 minutos"], answer: 2 },
+                { question: "Um homem entra num bar e pede um copo d'água. O barman saca uma arma. O homem diz 'obrigado' e vai embora. Por quê?", options: ["Ele era um ladrão", "Ele estava com soluço", "A água era grátis", "Eles eram amigos"], answer: 1 },
+                { question: "Um homem mora sozinho. Numa noite, apaga as luzes e dorme. De manhã, lê no jornal que um navio naufragou e se sente culpado. Por quê?", options: ["Ele era o capitão", "Ele sonhou com o navio", "Ele era o faroleiro", "Ele sabotou o navio"], answer: 2 },
+                { question: "Você tem 3 caixas: 'MAÇÃS', 'LARANJAS', 'MISTAS'. Todas estão erradas. Você tira UMA fruta de UMA caixa. De qual caixa você tira?", options: ["MAÇÃS", "LARANJAS", "MISTAS", "Qualquer uma"], answer: 2 },
+                { question: "Eu tenho duas portas: uma leva à salvação, outra à perdição. Há dois guardas, um sempre mente, o outro sempre fala a verdade. Com uma pergunta, como descubro a salvação?", options: ["Qual porta é a certa?", "Você mente?", "O que o outro guarda diria?", "Essa porta é a errada?"], answer: 2 },
+                { question: "Se um galo está exatamente na fronteira entre Brasil e Argentina, e ele bota um ovo. O ovo é de quem?", options: ["Brasil", "Argentina", "Dos dois", "De ninguém"], answer: 3 },
+                { question: "Um homem é encontrado morto em um campo de neve com um pedaço de canudo na mão. Qual a causa da morte?", options: ["Fome", "Frio", "Briga pelo paraquedas", "Asfixia"], answer: 2 },
+                { question: "Qual a pergunta que você nunca pode responder 'sim'?", options: ["Você está vivo?", "Você está dormindo?", "Você me ouve?", "Você é humano?"], answer: 1 },
+                { question: "O que é que tem 5 dedos, mas não é uma mão?", options: ["Um pé", "Uma luva", "Um garfo", "Um pente"], answer: 1 },
+                { question: "Se você tem uma caixa de fósforos com um só palito e entra num quarto frio e escuro com uma vela, um lampião e uma lareira, o que acende primeiro?", options: ["A vela", "O lampião", "A lareira", "O palito"], answer: 3 },
+                { question: "Tenho o triplo da idade que você tinha quando eu tinha a sua idade. Quando você tiver a minha idade, somaremos 70. Qual a minha idade?", options: ["20", "25", "30", "35"], answer: 2 },
+                { question: "O que é que se você vira de cabeça para baixo, vale mais?", options: ["O número 6", "O número 9", "Um copo", "Um mapa"], answer: 0 },
+                { question: "Qual é o próximo: O, D, T, Q, C, S, ...?", options: ["S", "O", "N", "D"], answer: 0 },
+                { question: "O que é que tem chaves, mas não abre portas?", options: ["Um teclado", "Um mapa", "Um piano", "Um rio"], answer: 2 },
+                { question: "Se um homem estivesse a 3 km de um parque e andasse mais 5 km em direção a ele, a que distância ele estaria do parque?", options: ["8 km", "2 km", "3 km", "Depende da direção inicial"], answer: 3 },
+                { question: "O que é que nasce na água, cresce na água, mas se colocado na água, morre?", options: ["Peixe", "Gelo", "Sal", "Barco"], answer: 2 },
+                { question: "Qual o próximo número: 12, 1, 1, 1, 2, 1, ...?", options: ["3", "1", "2", "4"], answer: 0 },
+                { question: "Um homem construiu uma casa retangular com todas as 4 paredes viradas para o Sul. Um urso apareceu. Qual era a cor do urso?", options: ["Preto", "Marrom", "Branco", "Pardo"], answer: 2 },
+                { question: "O que é que não pode ser usado até ser quebrado?", options: ["Ovo", "Espelho", "Segredo", "Coração"], answer: 0 },
+                { question: "O que é que você joga fora quando quer usar, e pega de volta quando não quer mais?", options: ["Carta", "Lixo", "Âncora", "Bumerangue"], answer: 2 },
+                { question: "Um pai distribuiu 100 reais entre seus dois filhos, de modo que o dobro do que o mais velho recebeu menos o triplo do que o mais novo recebeu desse 0. Quanto recebeu o mais novo?", options: ["R$ 40", "R$ 60", "R$ 50", "R$ 30"], answer: 0 },
+                { question: "Se o preço da gasolina aumenta 10% e no mês seguinte diminui 10%, o preço final é maior, menor ou igual ao inicial?", options: ["Maior", "Menor", "Igual", "Depende do preço"], answer: 1 },
+                { question: "Numa cidade, 2/3 dos homens são casados com 3/5 das mulheres. Qual a proporção de pessoas casadas na cidade?", options: ["12/19", "5/8", "1/2", "13/20"], answer: 0 },
+                { question: "Em um saco, há 3 vezes mais bolas verdes do que azuis. Se tirarmos 5 de cada cor, o número de verdes se torna 4 vezes o de azuis. Quantas bolas verdes havia no início?", options: ["30", "45", "60", "75"], answer: 1 },
+                { question: "O que é que quanto mais você tira, mais você deixa para trás?", options: ["Dinheiro", "Tempo", "Pegadas", "Memórias"], answer: 2 },
+                { question: "Qual o próximo número: 2, 6, 12, 20, 30, ...?", options: ["40", "42", "36", "50"], answer: 1 },
+                { question: "Um trem de 500 metros precisa atravessar uma ponte de 500 metros. Se ele viaja a 60 km/h, quanto tempo leva para atravessá-la completamente?", options: ["30 segundos", "45 segundos", "1 minuto", "2 minutos"], answer: 2 },
+                { question: "O que é que tem 4, às vezes 9, mas nunca 5?", options: ["Letras", "Números", "Dedos", "Rodas"], answer: 0 },
+                { question: "Um pai tem 6 filhos. Cada filho tem uma irmã. Quantas pessoas há na família?", options: ["13", "12", "8", "9"], answer: 2 },
+                { question: "Se 1 = 3, 2 = 3, 3 = 5, 4 = 4, 5 = 4, 6 = 3, 7 = 5, 8 = 5, 9 = 4, 10 = 3, 11 = ...?", options: ["4", "5", "6", "7"], answer: 2 },
+                { question: "Se um tijolo pesa 1kg mais meio tijolo, quanto pesa um tijolo e meio?", options: ["2 kg", "2.5 kg", "3 kg", "4 kg"], answer: 2 },
+                { question: "Se 1/4 da metade de um número é 5, que número é esse?", options: ["10", "20", "30", "40"], answer: 3 },
+                { question: "O que é que tem dentes, mas não pode comer?", options: ["Alho", "Serrote", "Pente", "Todas as anteriores"], answer: 3 },
+                { question: "Qual o próximo: J, F, M, A, M, J, ...?", options: ["A", "S", "J", "D"], answer: 2 },
+                { question: "O que é que entra na casa, mas fica sempre do lado de fora?", options: ["A porta", "A janela", "O botão", "O vento"], answer: 2 },
+                { question: "O que é que sobe quando a chuva desce?", options: ["A temperatura", "O guarda-chuva", "O nível do rio", "O vento"], answer: 1 },
+                { question: "Se há 12 peixes em um aquário e 6 deles se afogam, quantos peixes sobram?", options: ["6", "0", "12", "Peixe não se afoga"], answer: 2 }
+            ],
+            dificil2: [ // Nível Milhão - Pegadinhas e Lógica muito difíceis
+                { question: "Um livro e uma caneta custam R$ 110. O livro custa R$ 100 A MAIS que a caneta. Quanto custa a caneta?", options: ["R$ 10", "R$ 5", "R$ 15", "R$ 1"], answer: 1 },
+                { question: "Se o dia depois de amanhã é 2 dias antes de uma sexta-feira, que dia é hoje?", options: ["Segunda", "Terça", "Quarta", "Domingo"], answer: 0 },
+                { question: "Se 3 gatos comem 3 ratos em 3 minutos, em quanto tempo 10 gatos comeriam 10 ratos?", options: ["10 minutos", "1 minuto", "3 minutos", "30 minutos"], answer: 2 },
+                { question: "Para numerar as páginas de um livro, um tipógrafo usou 204 algarismos. Quantas páginas tem o livro?", options: ["100", "104", "108", "112"], answer: 1 },
+                { question: "O que é que se você vira de cabeça para baixo, vale mais?", options: ["O número 6", "O número 9", "Um copo", "Um mapa"], answer: 0 },
+                { question: "Se 5 homens comem 5 laranjas em 5 minutos, em quantos minutos 15 homens comerão 15 laranjas?", options: ["1", "5", "15", "25"], answer: 1 },
+                { question: "Um número dividido por 5 deixa resto 3. O quociente, dividido por 4, deixa resto 2. Se o segundo quociente é 1, qual o número?", options: ["23", "28", "33", "38"], answer: 2 },
+                { question: "A soma de 5 números pares consecutivos é 100. Qual é o maior deles?", options: ["20", "22", "24", "26"], answer: 2 },
+                { question: "Quantos caminhos diferentes existem para ir do ponto A ao B numa grade 2x2, movendo-se apenas para a direita e para baixo?", options: ["4", "5", "6", "8"], answer: 2 },
+                { question: "Se 1/4 da metade de um número é 5, que número é esse?", options: ["10", "20", "30", "40"], answer: 3 },
+                { question: "Se o produto de dois números é 96 e a soma é 20, qual é a diferença entre eles?", options: ["8", "4", "6", "10"], answer: 1 },
+                { question: "Um pai tem 32 anos e seu filho 8. Daqui a quantos anos a idade do pai será o triplo da do filho?", options: ["2 anos", "3 anos", "4 anos", "5 anos"], answer: 2 },
+                { question: "Um número de 3 algarismos é par, múltiplo de 5, e a soma de seus algarismos é 10. O das centenas é o triplo do das dezenas. Que número é esse?", options: ["620", "310", "910", "Nenhuma das opções"], answer: 0 },
+                { question: "Se 5 ratos comem 5 queijos em 5 minutos, 1 rato come 1 queijo em quantos minutos?", options: ["1", "5", "10", "25"], answer: 1 },
+                { question: "Se 1 é 5, 2 é 10, 3 é 15, 4 é 20, o que é 5?", options: ["25", "1", "30", "50"], answer: 0 },
+                { question: "Em um lago, há vitórias-régias. A cada dia, elas dobram de área. Se levam 30 dias para cobrir o lago, quantos dias levam para cobrir metade?", options: ["15 dias", "10 dias", "25 dias", "29 dias"], answer: 3 },
+                { question: "Qual é o próximo número: 1, 11, 21, 1211, 111221, ...?", options: ["211211", "312211", "1112221", "132112"], answer: 1 },
+                { question: "O que é que tem cidades, mas não tem casas; florestas, mas não tem árvores; e rios, mas não tem água?", options: ["Um sonho", "Um desenho", "Um mapa", "Um livro"], answer: 2 },
+                { question: "Dois pais e dois filhos dividem 3 barras de chocolate igualmente. Cada um fica com uma barra inteira. Como?", options: ["Um comeu 2", "Eram 3 pessoas", "A mãe comeu", "As barras eram grandes"], answer: 1 },
+                { question: "O que é que quanto mais se cozinha, mais duro fica?", options: ["Batata", "Macarrão", "Pedra", "Ovo"], answer: 3 },
+                { question: "Eu tenho duas moedas que somam 30 centavos. Uma delas não é de 25 centavos. Quais são as moedas?", options: ["Duas de 15", "Três de 10", "Uma de 25 e uma de 5", "Uma de 20 e uma de 10"], answer: 2 },
+                { question: "Se um avião cai na fronteira dos EUA e Canadá, e metade dos passageiros era brasileira, onde os brasileiros são enterrados?", options: ["No Brasil", "Nos EUA", "No Canadá", "Em lugar nenhum"], answer: 3 },
+                { question: "Qual o próximo: D, S, T, Q, Q, S, S, ...?", options: ["D", "T", "Q", "O"], answer: 3 },
+                { question: "Um homem mora no 10º andar. Ele pega o elevador até o térreo todo dia. Na volta, sobe de escada do 7º ao 10º. Por quê?", options: ["Gosta de exercício", "O elevador está quebrado", "Ele é anão", "Esqueceu a chave"], answer: 2 },
+                { question: "O que é que tem boca mas não fala, tem leito mas não dorme?", options: ["O rio", "O bebê", "O travesseiro", "A caverna"], answer: 0 },
+                { question: "O que é que você pode segurar com a mão esquerda, mas nunca com a direita?", options: ["Um peso", "Sua mão direita", "Um segredo", "Nada"], answer: 1 },
+                { question: "Qual a única palavra que está sempre escrita 'errado'?", options: ["Correto", "Certo", "Errado", "Incorreto"], answer: 2 },
+                { question: "O que é que tem pescoço e não tem cabeça, tem braços e não tem mãos?", options: ["A camisa", "O rio", "A garrafa", "A cadeira"], answer: 0 },
+                { question: "O que é que quanto mais se perde, mais se tem?", options: ["Dinheiro", "Tempo", "Amigos", "O sono"], answer: 3 },
+                { question: "Eu não tenho voz, mas posso te ensinar tudo. Eu não tenho olhos, mas te mostro o mundo. O que eu sou?", options: ["Um espelho", "Um livro", "Um professor", "Um mapa"], answer: 1 },
+                { question: "Qual o próximo número: 1, 4, 5, 6, 7, 9, 11, ...?", options: ["13", "100", "12", "15"], answer: 1 },
+                { question: "O que é que está sempre vindo, mas nunca chega?", options: ["A noite", "O vento", "O amanhã", "O passado"], answer: 2 },
+                { question: "Se 5 ratos comem 5 queijos em 5 minutos, 1 rato come 1 queijo em quantos minutos?", options: ["1", "5", "10", "25"], answer: 1 },
+                { question: "Um homem entra num bar e pede um copo d'água. O barman saca uma arma. O homem diz 'obrigado' e vai embora. Por quê?", options: ["Ele era um ladrão", "Ele estava com soluço", "A água era grátis", "Eles eram amigos"], answer: 1 },
+                { question: "Um homem mora sozinho. Numa noite, apaga as luzes e dorme. De manhã, lê no jornal que um navio naufragou e se sente culpado. Por quê?", options: ["Ele era o capitão", "Ele sonhou com o navio", "Ele era o faroleiro", "Ele sabotou o navio"], answer: 2 },
+                { question: "Você tem 3 caixas: 'MAÇÃS', 'LARANJAS', 'MISTAS'. Todas estão erradas. Você tira UMA fruta de UMA caixa. De qual caixa você tira?", options: ["MAÇÃS", "LARANJAS", "MISTAS", "Qualquer uma"], answer: 2 },
+                { question: "Eu tenho duas portas: uma leva à salvação, outra à perdição. Há dois guardas, um sempre mente, o outro sempre fala a verdade. Com uma pergunta, como descubro a salvação?", options: ["Qual porta é a certa?", "Você mente?", "O que o outro guarda diria?", "Essa porta é a errada?"], answer: 2 },
+                { question: "Se um galo está exatamente na fronteira entre Brasil e Argentina, e ele bota um ovo. O ovo é de quem?", options: ["Brasil", "Argentina", "Dos dois", "De ninguém"], answer: 3 },
+                { question: "O que é que tem no meio do ovo?", options: ["A gema", "A clara", "A letra V", "Nada"], answer: 2 },
+                { question: "O que é que nunca volta, embora nunca tenha ido?", options: ["O tempo", "O vento", "O ontem", "O sol"], answer: 2 },
+                { question: "Qual o próximo número: 1, 10, 11, 100, 101, 110, ...?", options: ["111", "1000", "200", "1101"], answer: 0 },
+                { question: "O que é que quanto mais se lava, mais sujo fica?", options: ["O chão", "A água", "O sabão", "A roupa"], answer: 1 },
+                { question: "Um homem é encontrado morto em um campo de neve com um pedaço de canudo na mão. Qual a causa da morte?", options: ["Fome", "Frio", "Briga pelo paraquedas", "Asfixia"], answer: 2 },
+                { question: "Qual a pergunta que você nunca pode responder 'sim'?", options: ["Você está vivo?", "Você está dormindo?", "Você me ouve?", "Você é humano?"], answer: 1 },
+                { question: "O que é que tem 5 dedos, mas não é uma mão?", options: ["Um pé", "Uma luva", "Um garfo", "Um pente"], answer: 1 },
+                { question: "Se você tem uma caixa de fósforos com um só palito e entra num quarto frio e escuro com uma vela, um lampião e uma lareira, o que acende primeiro?", options: ["A vela", "O lampião", "A lareira", "O palito"], answer: 3 },
+                { question: "Um homem está em um quarto. Há uma mesa e um espelho. Ele se vê no espelho. O que ele viu?", options: ["Seu reflexo", "O 'vi' (verbo)", "Nada", "Um fantasma"], answer: 0 },
+                { question: "Se A = 1, B = 2, C = 3... Qual o valor da palavra 'GATO' (soma)?", options: ["26", "27", "28", "29"], answer: 1 },
+                { question: "Se 3x = 30, quanto é 2x?", options: ["10", "15", "20", "30"], answer: 2 },
+                { question: "O que é que tem 8 pernas mas não anda?", options: ["Uma aranha morta", "Duas cadeiras", "4 pares de meias", "Uma mesa"], answer: 1 },
+                { question: "Tenho o triplo da idade que você tinha quando eu tinha a sua idade. Quando você tiver a minha idade, somaremos 70. Qual a minha idade?", options: ["20", "25", "30", "35"], answer: 2 },
+                { question: "Qual é o próximo: O, D, T, Q, C, S, ...?", options: ["S", "O", "N", "D"], answer: 0 },
+                { question: "Se um homem estivesse a 3 km de um parque e andasse mais 5 km em direção a ele, a que distância ele estaria do parque?", options: ["8 km", "2 km", "3 km", "Depende da direção inicial"], answer: 3 },
+                { question: "O que é que nasce na água, cresce na água, mas se colocado na água, morre?", options: ["Peixe", "Gelo", "Sal", "Barco"], answer: 2 },
+                { question: "Qual o próximo número: 12, 1, 1, 1, 2, 1, ...?", options: ["3", "1", "2", "4"], answer: 0 },
+                { question: "Um homem construiu uma casa retangular com todas as 4 paredes viradas para o Sul. Um urso apareceu. Qual era a cor do urso?", options: ["Preto", "Marrom", "Branco", "Pardo"], answer: 2 },
+                { question: "O que é que não pode ser usado até ser quebrado?", options: ["Ovo", "Espelho", "Segredo", "Coração"], answer: 0 },
+                { question: "O que é que você joga fora quando quer usar, e pega de volta quando não quer mais?", options: ["Carta", "Lixo", "Âncora", "Bumerangue"], answer: 2 },
+                { question: "Um pai distribuiu 100 reais entre seus dois filhos, de modo que o dobro do que o mais velho recebeu menos o triplo do que o mais novo recebeu desse 0. Quanto recebeu o mais novo?", options: ["R$ 40", "R$ 60", "R$ 50", "R$ 30"], answer: 0 },
+                { question: "Se o preço da gasolina aumenta 10% e no mês seguinte diminui 10%, o preço final é maior, menor ou igual ao inicial?", options: ["Maior", "Menor", "Igual", "Depende do preço"], answer: 1 },
+                { question: "Numa cidade, 2/3 dos homens são casados com 3/5 das mulheres. Qual a proporção de pessoas casadas na cidade?", options: ["12/19", "5/8", "1/2", "13/20"], answer: 0 },
+                { question: "Em um saco, há 3 vezes mais bolas verdes do que azuis. Se tirarmos 5 de cada cor, o número de verdes se torna 4 vezes o de azuis. Quantas bolas verdes havia no início?", options: ["30", "45", "60", "75"], answer: 1 },
+                { question: "O que é que quanto mais você tira, mais você deixa para trás?", options: ["Dinheiro", "Tempo", "Pegadas", "Memórias"], answer: 2 },
+                { question: "Qual o próximo número: 2, 6, 12, 20, 30, ...?", options: ["40", "42", "36", "50"], answer: 1 },
+                { question: "Um trem de 500 metros precisa atravessar uma ponte de 500 metros. Se ele viaja a 60 km/h, quanto tempo leva para atravessá-la completamente?", options: ["30 segundos", "45 segundos", "1 minuto", "2 minutos"], answer: 2 },
+                { question: "O que é que tem 4, às vezes 9, mas nunca 5?", options: ["Letras", "Números", "Dedos", "Rodas"], answer: 0 },
+                { question: "Um pai tem 6 filhos. Cada filho tem uma irmã. Quantas pessoas há na família?", options: ["13", "12", "8", "9"], answer: 2 },
+                { question: "Se 1 = 3, 2 = 3, 3 = 5, 4 = 4, 5 = 4, 6 = 3, 7 = 5, 8 = 5, 9 = 4, 10 = 3, 11 = ...?", options: ["4", "5", "6", "7"], answer: 2 },
+                { question: "Se um tijolo pesa 1kg mais meio tijolo, quanto pesa um tijolo e meio?", options: ["2 kg", "2.5 kg", "3 kg", "4 kg"], answer: 2 },
+                { question: "O que é que tem dentes, mas não pode comer?", options: ["Alho", "Serrote", "Pente", "Todas as anteriores"], answer: 3 },
+                { question: "Qual o próximo: J, F, M, A, M, J, ...?", options: ["A", "S", "J", "D"], answer: 2 },
+                { question: "O que é que entra na casa, mas fica sempre do lado de fora?", options: ["A porta", "A janela", "O botão", "O vento"], answer: 2 },
+                { question: "O que é que sobe quando a chuva desce?", options: ["A temperatura", "O guarda-chuva", "O nível do rio", "O vento"], answer: 1 },
+                { question: "Se há 12 peixes em um aquário e 6 deles se afogam, quantos peixes sobram?", options: ["6", "0", "12", "Peixe não se afoga"], answer: 2 }
+            ]
+        };
+
+        // --- LÓGICA DO JOGO (Exatamente como você enviou) ---
+
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        const continueModal = document.getElementById('continue-modal');
+        
+        const startBtn = document.getElementById('start-btn');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const continueBtn = document.getElementById('continue-btn');
+        const stopGameBtn = document.getElementById('stop-game-btn');
+        
+        const swapBtn = document.getElementById('swap-btn');
+        const bombBtn = document.getElementById('bomb-btn');
+
+        const questionNumberEl = document.getElementById('question-number');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+
+        const endTitleEl = document.getElementById('end-title');
+        const endMessageEl = document.getElementById('end-message');
+
+        let gameState = {};
+        
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        function selectGameQuestions() {
+            const selected = [];
+            const usedQuestions = new Set();
+
+            const addQuestionFromLevel = (level, count) => {
+                const levelQuestions = questions[level];
+                if (!levelQuestions || levelQuestions.length === 0) {
+                    console.error(`Nenhuma pergunta encontrada para o nível: ${level}`);
+                    return;
+                }
+                // Garante que temos perguntas suficientes para escolher
+                let availableQuestions = [...levelQuestions];
+                if (availableQuestions.length < count) {
+                     console.warn(`Aviso: Nível ${level} tem menos perguntas (${availableQuestions.length}) do que o solicitado (${count}). Usando todas disponíveis.`);
+                     count = availableQuestions.length;
+                }
+
+                const shuffledLevel = shuffleArray(availableQuestions);
+                let addedCount = 0;
+                for (const q of shuffledLevel) {
+                    const qString = JSON.stringify(q);
+                    // Verifica se a pergunta já não foi usada nesta rodada
+                    if (!usedQuestions.has(qString)) {
+                        selected.push({ ...q, level: level });
+                        usedQuestions.add(qString);
+                        addedCount++;
+                        if (addedCount === count) break;
+                    }
+                }
+                
+                // Fallback: Se mesmo assim não conseguir perguntas (ex: todas duplicadas)
+                if (addedCount < count) {
+                    console.warn(`Fallback: Preenchendo nível ${level} com perguntas repetidas (se necessário).`);
+                    for (let i = 0; i < (count - addedCount); i++) {
+                        selected.push({ ...shuffledLevel[i % shuffledLevel.length], level: level });
+                    }
+                }
+            };
+            
+            addQuestionFromLevel('facil1', 1);
+            addQuestionFromLevel('facil2', 1);
+            addQuestionFromLevel('medio1', 1);
+            addQuestionFromLevel('medio2', 1);
+            addQuestionFromLevel('dificil1', 1);
+            addQuestionFromLevel('dificil2', 1);
+            
+            // Salva todas as perguntas usadas *nesta seleção* para a ajuda de troca
+            gameState.usedQuestionPool = new Set(usedQuestions); 
+            return selected;
+        }
+
+        function startGame() {
+            gameState = {
+                currentQuestionIndex: 0,
+                bombUsed: false,
+            };
+            gameState.currentQuestions = selectGameQuestions();
+
+            if (gameState.currentQuestions.length < 6) {
+                // Use um modal customizado em vez de alert
+                endTitleEl.innerHTML = 'Erro!';
+                endMessageEl.innerHTML = 'Não há perguntas suficientes para iniciar. Verifique o banco de perguntas.';
+                startScreen.classList.add('hidden');
+                endScreen.classList.remove('hidden');
+                playAgainBtn.innerHTML = "Recarregar";
+                playAgainBtn.onclick = () => location.reload();
+                return;
+            }
+
+            startScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+            continueModal.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+
+            displayQuestion();
+            updateLifelines();
+        }
+        
+        function displayQuestion() {
+            // Re-habilita o botão de troca para a nova pergunta
+            swapBtn.disabled = false; 
+            
+            const questionData = gameState.currentQuestions[gameState.currentQuestionIndex];
+            if (!questionData) {
+                endGame(true);
+                return;
+            }
+            questionNumberEl.textContent = gameState.currentQuestionIndex + 1;
+            questionTextEl.innerHTML = questionData.question;
+
+            // Embaralha as opções e guarda o novo índice da resposta correta
+            const correctAnswerText = questionData.options[questionData.answer];
+            let shuffledOptions = shuffleArray([...questionData.options]);
+            gameState.currentCorrectIndex = shuffledOptions.indexOf(correctAnswerText);
+
+            optionsContainer.innerHTML = '';
+            shuffledOptions.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn w-full text-left p-4 bg-slate-700 rounded-lg text-lg hover:bg-yellow-400 hover:text-slate-900 transition-colors duration-200 border-2 border-transparent';
+                button.innerHTML = `<span class="font-bold text-yellow-400 mr-2">${String.fromCharCode(65 + index)}:</span> ${option}`;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            updateLifelines(); // Atualiza o estado dos botões (ex: bomba)
+        }
+        
+        function updateLifelines() {
+            bombBtn.disabled = gameState.bombUsed;
+            // Não desabilitar o swapBtn aqui, ele é controlado pelo displayQuestion e useSwap
+        }
+
+        function setLifelinesDisabled(disabled) {
+            swapBtn.disabled = disabled;
+            bombBtn.disabled = disabled || gameState.bombUsed;
+        }
+
+        function selectAnswer(selectedIndex) {
+            setLifelinesDisabled(true); // Desabilita ajudas após responder
+            const isCorrect = selectedIndex === gameState.currentCorrectIndex;
+            const optionButtons = optionsContainer.querySelectorAll('.option-btn');
+
+            optionButtons.forEach(btn => btn.disabled = true);
+
+            optionButtons[gameState.currentCorrectIndex].classList.add('correct');
+            if (isCorrect) {
+                document.getElementById('correct-sound').play();
+            } else {
+                document.getElementById('incorrect-sound').play();
+                optionButtons[selectedIndex].classList.add('incorrect');
+            }
+
+            setTimeout(() => {
+                if (isCorrect) {
+                    if (gameState.currentQuestionIndex === gameState.currentQuestions.length - 1) {
+                        endGame(true);
+                    } else {
+                        continueModal.classList.remove('hidden');
+                    }
+                } else {
+                    endGame(false);
+                }
+            }, 2000);
+        }
+        
+        function proceedToNextQuestion() {
+            continueModal.classList.add('hidden');
+            gameState.currentQuestionIndex++;
+            displayQuestion();
+        }
+
+        function useSwap() {
+            const currentQ = gameState.currentQuestions[gameState.currentQuestionIndex];
+            const level = currentQ.level;
+            
+            swapBtn.disabled = true; // Desabilita o botão permanentemente *para esta pergunta*
+
+            let newQuestion;
+            const shuffledLevel = shuffleArray([...questions[level]]);
+            
+            // Tenta encontrar uma pergunta do mesmo nível que ainda não foi usada
+            for(const q of shuffledLevel) {
+                const qString = JSON.stringify(q);
+                if(!gameState.usedQuestionPool.has(qString)) {
+                    newQuestion = { ...q, level: level };
+                    break;
+                }
+            }
+
+            // Se não achar uma inédita (todas do nível já foram usadas), pega uma diferente da atual
+            if (!newQuestion) {
+                 for(const q of shuffledLevel) {
+                     if(JSON.stringify(q) !== JSON.stringify(currentQ)) {
+                         newQuestion = { ...q, level: level };
+                         break;
+                     }
+                }
+            }
+            
+            // Se mesmo assim não achar (improvável, só se o nível tiver 1 pergunta)
+            if (!newQuestion) {
+                newQuestion = currentQ; // Mantém a pergunta atual
+            }
+
+            if (newQuestion) {
+                // Adiciona a nova pergunta ao pool de usadas desta rodada
+                gameState.usedQuestionPool.add(JSON.stringify(newQuestion)); 
+                gameState.currentQuestions[gameState.currentQuestionIndex] = newQuestion;
+                displayQuestion();
+            }
+            
+            // Garante que o botão de bomba (se não usado) permaneça clicável
+            bombBtn.disabled = gameState.bombUsed; 
+        }
+
+        function useBomb() {
+            if (gameState.bombUsed) return;
+            gameState.bombUsed = true;
+            bombBtn.disabled = true;
+
+            const correctAnswerIndex = gameState.currentCorrectIndex;
+            const optionButtons = optionsContainer.querySelectorAll('.option-btn');
+
+            const incorrectIndices = [];
+            for (let i = 0; i < optionButtons.length; i++) {
+                if (i !== correctAnswerIndex) {
+                    incorrectIndices.push(i);
+                }
+            }
+
+            shuffleArray(incorrectIndices);
+            
+            optionButtons[incorrectIndices[0]].disabled = true;
+            optionButtons[incorrectIndices[1]].disabled = true;
+        }
+
+        function endGame(isWinner, gaveUp = false) {
+            gameScreen.classList.add('hidden');
+            continueModal.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+
+            if (isWinner) {
+                endTitleEl.innerHTML = 'PARABÉNS!';
+                endMessageEl.innerHTML = `Você acertou todas as perguntas e ganhou ${formatCurrency(1000000)}!`;
+            } else if (gaveUp) {
+                endTitleEl.innerHTML = 'Fim de Jogo!';
+                endMessageEl.innerHTML = `Você desistiu. Na modalidade 'Tudo ou Nada', não há prêmio de consolação. Tente novamente!`;
+            } else {
+                endTitleEl.innerHTML = 'Fim de Jogo!';
+                endMessageEl.innerHTML = `Que pena, você errou! Nesta edição, é tudo ou nada. Tente novamente!`;
+            }
+            
+            // Reseta o botão de jogar novamente para o estado inicial
+            playAgainBtn.innerHTML = "Jogar Novamente";
+            playAgainBtn.onclick = () => {
+                 endScreen.classList.add('hidden');
+                 startScreen.classList.remove('hidden');
+            };
+        }
+
+        startBtn.addEventListener('click', startGame);
+        playAgainBtn.addEventListener('click', () => {
+            endScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        });
+        swapBtn.addEventListener('click', useSwap);
+        bombBtn.addEventListener('click', useBomb);
+        continueBtn.addEventListener('click', proceedToNextQuestion);
+        stopGameBtn.addEventListener('click', () => endGame(false, true));
+
+    </script>
+</body>
+</html>
+
